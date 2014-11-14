@@ -30,7 +30,7 @@
 		color:#FFF; 
 	}
 	    #particles-js{ 
-	    	z-index:-10;
+	    	z-index:-1;
 	    	position:fixed;
 	    	 background:#081545;
 	    	width:100%;
@@ -99,10 +99,10 @@ function showModal(key){
 				</div>
 			</div>
 		</div>
-	<div class="pageWrap" >
+	<div class="pageWrap" style="z-index:2;">
 
 
-	<div class="circularImg">
+	<div class="circularImg" style="z-index:30">
 	</div>
 	<h1 class="headerText" style="text-align: center; line-height: 4em; margin-bottom:-60px">James Gallagher</h1>
 	<h1 class="headerText" style="text-align: center; line-height: 2em; font-size:20px; margin-bottom:70px">Developer @iLancaster,  Code Fellow @GMDSP,  Student @LancasterUni</h1>
@@ -219,9 +219,9 @@ function showModal(key){
 	particles: {
 	    color_hex: '#000',
 		opacity: 1,
-		size: 5,
+		size: 2,
 		size_random: true,
-		nb: 50,
+		nb: 100,
 		anim: {
 			speed: 2
 		}
