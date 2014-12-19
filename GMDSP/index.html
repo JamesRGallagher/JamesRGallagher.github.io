@@ -70,19 +70,57 @@
         },
     ];
 
+    function drawResultsTable(results){
+        var resultBox = document.getElementById('result');
+        resultBox.innerHTML = "";
+        tableString = '<table class="table"><thead><tr>';
+        var headingsArray = results.head.vars;
+        nCols = results.head.vars.length;
+        nRows = results.results.bindings.length;
+        for(i=0;i<nCols;i++){
+            tableString += '<th>'+headingsArray[i]+'</th>'
+        }
+        tableString += '</tr></thead>';
+        for(x=0;x<nRows;x++){
+            tableString += '<tr>';
+                for(var propertyName in results.results.bindings[i]) {
+                    tableString += '<td>'+results.results.bindings[i][propertyName].value+'</td>';
+                
+                
+
+          
+            }
+
+            tableString += '</tr>'
+
+
+
+        }
+        tableString += '</table>';
+
+        resultBox.innerHTML = tableString;
+
+
+
+
+
+
+    } 
+
     function runCode() {
-        var resultBox = document.getElementById('result').innerHTML;
-        resultBox = "";
+        var resultBox = document.getElementById('result');
+        resultBox.innerHTML = "";
         var query = ace.edit("code").getSession().getValue();
         var encodedQuery = encodeURIComponent(query);
         var requestURL = baseURL + encodedQuery;
         $.ajax({
             url: requestURL,
             success: function(data) {
-                resultBox = JSON.stringify(data, null, 5);
+                console.log(data)
+                drawResultsTable(data)
             },
             error: function(data) {
-                resultBox = JSON.stringify(data, null, 4);
+                resultBox.innerHTML = JSON.stringify(data, null, 4);
             }
         });
     }
@@ -170,7 +208,9 @@
                     </div>
                     <div class="col-md-8 column">
                         <div class="panel panel-default">
-                            <div style="height:300px;" class="panel-body" id="code"></div>
+                            <div style="height:300px;" class="panel-body" id="code">
+                                
+                            </div>
                         </div>
                         <br>
                         <button onclick="runCode()" type="button" class="btn btn-warning btn-lg btn-block">Run</button>
