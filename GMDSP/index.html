@@ -86,26 +86,11 @@
             console.log(results.results.bindings[x])
                 for(var propertyName in results.results.bindings[x]) {
                     tableString += '<td>'+results.results.bindings[x][propertyName].value+'</td>';
-                
-                
-
-          
-            }
-
+                }
             tableString += '</tr>'
-
-
-
         }
         tableString += '</table>';
-
         resultBox.innerHTML = tableString;
-
-
-
-
-
-
     } 
 
     function runCode() {
