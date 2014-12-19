@@ -55,7 +55,7 @@
     {
         title: 'Doing something useful',
         text: 'Take a look at this simple query. It may look complicated at first but it is quite simple. We have our prefix definitions for URIs, our SELECT and WHERE statements, and our variables. This statement is should return the borough of incidents of type fire, where the property was a car. location, ward, borough northing and easting can be variable. Try running this query',
-        code:'PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX fire: <http://data.gmdsp.org.uk/def/fire-and-rescue/>\nPREFIX ord: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>\nPREFIX ptype: <http://data.gmdsp.org.uk/def/fire-and-rescue/property-type/>\n\nSELECT  ?borough ?northing ?easting\n\nWHERE {\n?incident rdf:type fire:Incident.\n?incident fire:propertyType ptype:car.\n?incident fire:incidentLocation ?location.\n?location fire:wardName ?ward.\n?location fire:borough ?borough.\n?location ord:northing ?northing.\n?location ord:easting ?easting\n}\nLIMIT 100\n'
+        code:'PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX fire: <http://data.gmdsp.org.uk/def/fire-and-rescue/>\nPREFIX ord: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>\nPREFIX ptype: <http://data.gmdsp.org.uk/def/fire-and-rescue/property-type/>\n\nSELECT  ?borough \n\nWHERE {\n?incident rdf:type fire:Incident.\n?incident fire:propertyType ptype:car.\n?incident fire:incidentLocation ?location.\n?location fire:wardName ?ward.\n?location fire:borough ?borough.\n?location ord:northing ?northing.\n?location ord:easting ?easting\n}\nLIMIT 100\n'
 
     },
     {
