@@ -9,6 +9,103 @@ font-family:'Lato', sans-serif;
 font-weight:700;
 }
 
+#footer .left{
+text-align:left;
+float:left;
+}
+#footer .right{
+float:right;
+text-align:right;
+}
+#footer .centered{
+text-align:center;
+}
+
+.startTheHunt img{
+	padding: 10px;
+}
+.startTheHunt h1{
+	font-family: 'lato';
+	font-weight:500;
+
+	font-size: 32px;
+}
+.startTheHunt h5{
+font-family: 'lato';
+	font-weight:500;
+
+	font-size: 15px;
+
+}
+
+.light{
+font-family: 'lato';
+	font-weight:300;
+
+	font-size: 24px;
+
+}
+
+.intro-message h3{
+	font-family: 'lato';
+	font-weight:500;
+	margin-bottom: 39px;
+	font-size: 24px;
+
+
+}
+.intro-message h4{
+	font-family: 'lato';
+	font-weight:500;
+
+	font-size: 24px;
+
+
+}
+
+.intro-message .btn {
+
+	margin-right:15px;
+	width:100px;	border-width: 3px;
+
+box-shadow:none;	
+
+box-shadow:none !important;
+  background: #3498db;
+
+  -webkit-border-radius: 8;
+  -moz-border-radius: 8;
+  border-radius: 10px;
+  font-family: 'lato';
+  font-weight:300;
+  color: #ffffff;
+  font-size: 15px;
+  padding: 8px 12px 8px 12px;
+  text-decoration: none;
+   border-color: #3498db;
+
+}
+.intro-message .btn2 {
+	text-shadow:none !important;
+box-shadow:none;	
+
+box-shadow:none !important;
+		margin-left:15px;
+	width:100px;
+	border-width: 2px;
+  background: transparent;
+ border-color: white !important;
+  -webkit-border-radius: 8;
+  -moz-border-radius: 8;
+  border-radius: 10px;
+  font-family: 'lato';
+  font-weight:300;
+  color: #ffffff;
+  font-size: 15px;
+  padding: 8px 12px 8px 12px;
+  text-decoration: none;
+}
+
 
 .move{
 
@@ -317,7 +414,7 @@ margin:0 auto;
 }
 
 .intro-header {
-height:315px;
+height:385px;
 padding-top:50px;
 padding-bottom:0;
 text-align:center;
@@ -347,7 +444,6 @@ margin-top:-200px;
 }
 
 .intro-message > h1 {
-text-shadow:2px 2px 3px rgba(0,0,0,0.6);
 font-size:5em;
 margin:0;
 }
@@ -362,7 +458,7 @@ border-bottom:1px solid rgba(0,0,0,0.2);
 }
 
 .intro-message > h3 {
-text-shadow:2px 2px 3px rgba(0,0,0,0.6);
+
 }
 
 .network-name {
@@ -479,6 +575,25 @@ margin-top:15px;
 }
 
 @media (max-width:767px){
+
+		.intro-message h3{
+	font-family: 'lato';
+	font-weight:500;
+	margin-bottom:0px;
+	font-size: 18px;
+
+
+}
+
+
+.intro-message h4{
+	font-family: 'lato';
+	font-weight:500;
+
+	font-size: 18px;
+
+
+}
 	.not-convinced-message h4{
 		font-size: 15px;
 	}
@@ -557,6 +672,42 @@ margin-left:60px;
 }
 
 @media(max-width:500px){
+#footer p{
+   text-align: center !important;
+   float:center !important;
+}
+	.intro-message h3{
+	font-family: 'lato';
+	font-weight:500;
+	margin-bottom:0px;
+	font-size: 12px;
+
+
+}
+.intro-message h4{
+	font-family: 'lato';
+	font-weight:500;
+
+	font-size: 14px;
+
+
+}
+.intro-message .btn2{
+	padding:none;
+	width:100px;
+	margin-left: 0px;
+	margin-right: 0px;
+
+
+}
+.intro-message .btn{
+	padding:none;
+	width:100px;
+	margin-left: 0px;
+	margin-right: 0px;
+
+
+}
 	.notconvicon{
 		height:50px;
 	}
