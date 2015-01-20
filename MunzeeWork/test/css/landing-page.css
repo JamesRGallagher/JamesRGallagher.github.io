@@ -8,6 +8,18 @@ body,h1,h2,h3,h4,h5,h6 {
 font-family:'Lato', sans-serif;
 font-weight:700;
 }
+.img-head{
+	height:auto!important;
+	padding:0 !important;
+	padding-bottom: 30px!important;
+
+	text-align: left!important;
+	margin-top:0 !important;
+		margin-bottom:0 !important;
+	color:gray;
+
+
+}	
 
 #footer .left{
 text-align:left;
@@ -193,13 +205,27 @@ box-shadow:none !important;
 }
 
 
+
 @media only screen and (max-width:767px){
+		.img-head {
+		display:none !important;
+	}
+	.img-head h4{
+		display:none !important;
+	}
 
 	.col {  margin: 1% 0 1% 0%; }
 	.span_1_of_4, .span_2_of_4, .span_3_of_4, .span_4_of_4 { width: 50%; }
 }
 /*  GO FULL WIDTH BELOW 480 PIXELS */
 @media only screen and (max-width: 480px) {
+	.img-head {
+		display:none !important;
+	}
+	.img-head h4{
+		display:none !important;
+	}
+
 	.col {  margin: 1% 0 1% 0%; }
 	.span_1_of_4, .span_2_of_4, .span_3_of_4, .span_4_of_4 { width: 100%; }
 }
@@ -207,11 +233,37 @@ box-shadow:none !important;
 .middleT{
 	background-color: #47BCF6 !important;
 }
-#photos img {
+.gallery1 {
+width:100%;
+background-color: white;
+max-width:940px;
+padding:10px;
+text-align: center;
+margin:0 auto;
+} 
+.gallery1 div {
+	overflow: hidden;
+	display: inline-block;
+	width:245px;
+	height:140px;
+
+margin: 20px;
+}
+.gallery1 img {
+width:100%;
+}
+#photos div {
+
+	background-color: red;
   /* Just in case there are inline attributes */
   width: 83% !important;
   height: auto !important;
   margin:30px 30px 30px 30px;
+
+
+}
+#photos img {
+
 
 
 }
@@ -235,14 +287,12 @@ width:100%;
 @media (max-width: 1000px) {
   #photos {
   	
-  -moz-column-count:    3;
-  -webkit-column-count: 3;
-  column-count:         3;
+  -moz-column-count:    4;
+  -webkit-column-count: 4;
+  column-count:         4;
  
   }
-   #photos {
-padding-left:0px;
-}
+
 }
 @media (max-width: 800px) {
   #photos {
@@ -574,7 +624,33 @@ margin-top:15px;
 }
 }
 
+@media (min-width:768px){
+
+
+.gallery1 {
+		width:125%;
+margin-left:-88px
+	}
+	.gallery1 div {
+		width:230px;
+	}
+
+
+}
+
+@media (min-width:1000px){
+.gallery1 {
+		width:auto;
+margin-left:auto
+	}
+	
+
+
+}
+
 @media (max-width:767px){
+
+
 
 		.intro-message h3{
 	font-family: 'lato';

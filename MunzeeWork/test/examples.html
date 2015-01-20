@@ -14,6 +14,8 @@
       <!-- Custom Fonts -->
       <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
       <link href="http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+       <link href=" https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css">
+
      
    </head>
    <body>
@@ -71,18 +73,38 @@
          <!-- /.container -->
       </div>
       <!-- Page Content -->
+     
       <div class="content-section content-section-a">
-          <div class="container">
-            <section id="photos">
-  <img src="http://placehold.it/400x300">
-    <img src="http://placehold.it/400x300">
-  <img src="http://placehold.it/400x300">
-  <img src="http://placehold.it/400x300">
-  <img src="http://placehold.it/400x300">
-  <img src="http://placehold.it/400x300">
+          <div style="padding-top:17px" class="container imgcont">
+            <div class="gallery1">
+  <!-- placeholder images from http://lorempixel.com -->
+<div> <a href="img/cabelas.jpg"><img src="img/cabelas.jpg"><br></a><h4>TEST</h4></div>
+<div> <a href="img/downtownmckinney.jpg"><img src="img/downtownmckinney.jpg"><br></a></div>
+<div> <a href="img/NOACboyscouts.jpg"><img src="img/NOACboyscouts.jpg"><br></a></div>
+
+   <div class="img-head"> <h4>Cabela's</h4></div>
+   <div class="img-head"> <h4>Downtown McKinney</h4></div>
+   <div class="img-head"> <h4>NOCA Boy Scouts</h4></div>
+<div> <a href="img/Phillips66.jpg"><img src="img/Philips66.png"><br></a></div>
+<div> <a href="img/turkeyfederation.jpg"><img src="img/turkeyfederation.jpg"><br></a></div>
+<div> <a href="img/norwichtrails.jpg"><img src="img/norwichtrails.jpg"><br></a></div>
+   <div class="img-head"> <h4 style="padding-bottom:17px">Phillips 66</h4></div>
+   <div class="img-head"> <h4>National Wild Turkey Conference</h4></div>
+   <div class="img-head"> <h4 style="padding-bottom:17px">Norwich Trails</h4></div>
+ 
+  
+</div>
+           <!-- <section id="photos">
+  <div><img src="http://placehold.it/400x300"></div>
+    <div><img src="http://placehold.it/400x300"></div>
+  <div><img src="http://placehold.it/400x300"></div>
+  <div><img src="http://placehold.it/400x300"></div>
+  <div><img src="http://placehold.it/400x300"></div>
+  <div><img src="http://placehold.it/400x300"></div>
+
 
  
-</section>
+</section>-->
          </div>
          
       </div>
@@ -116,5 +138,31 @@
       <script src="js/jquery.js"></script>
       <!-- Bootstrap Core JavaScript -->
       <script src="js/bootstrap.min.js"></script>
+       <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+       <script>
+       $(document).ready(function() {
+
+  /* This is basic - uses default settings */
+  
+  $(".gallery1 a").fancybox();
+  
+  /* Using custom settings */
+  
+  $(".gallery1 a").fancybox({
+    'hideOnContentClick': true
+  });
+
+  /* Apply fancybox to multiple items */
+  
+  $("a.group").fancybox({
+    'transitionIn'  : 'elastic',
+    'transitionOut' : 'elastic',
+    'speedIn'   : 600, 
+    'speedOut'    : 200, 
+    'overlayShow' : false
+  });
+  
+});
+       </script>
    </body>
 </html>
