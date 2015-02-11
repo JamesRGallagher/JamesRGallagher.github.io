@@ -1,0 +1,927 @@
+{% extends "master.html" %}
+{% block init %}{{ aek.set_aek_version(1.4) }}{% endblock %}
+{% block title %}Chat{% endblock %}
+{% block extra_head %}
+<style>
+    @font-face {
+        font-family: LexiaLight;
+        src: url(https://portal.ombiel.co.uk/assets/LancasterStudents/AET_Files/fonts/lexia_std_lt-webfont.woff) format(woff), url(https://portal.ombiel.co.uk/assets/LancasterStudents/AET_Files/fonts/lexia_std_lt-webfont.svg#LexiaLight) format(svg);
+        font-weight: 400;
+        font-style: normal;
+    }
+    html, body {
+        height: 100%;
+    }
+    .bodWrapper {
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .inputBoxInitial {
+        visibility: hidden;
+    }
+    .loadContainer {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+        max-width: 600px;
+    }
+    .loadingText {
+        color: #D52B1E;
+        font-family: 'LexiaLight', san-serif;
+        font-size: 2.0em;
+        line-height: 1.0;
+    }
+    .loadingSpinner {
+        margin-bottom: 30%;
+        margin-top: 30%;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 50px;
+    }
+    .triangle-border {
+        position: relative;
+        color: #333;
+        background: #fff;
+        padding: 8px;
+        -webkit-box-shadow: 6px 19px 44px -19px rgba(0,0,0,0.75);
+        -moz-box-shadow: 6px 19px 44px -19px rgba(0,0,0,0.75);
+        box-shadow: 6px 19px 44px -19px rgba(0,0,0,0.75);
+        border: 2px solid #9a9a9a;
+    }
+    .R {
+        left: 35px;
+        border-left: 5px solid #326f0f;
+    }
+    .L {
+        right: 35px;
+        border-right: 5px solid #9e1420;
+    }
+    .triangle-border:before {
+        content: "";
+        position: absolute;
+        bottom: -20px;
+        left: 40px;
+        display: block;
+        width: 0;
+        border-color: #9a9a9a transparent;
+        border-style: solid;
+        border-width: 20px 20px 0;
+    }
+    .triangle-border:after {
+        content: "";
+        position: absolute;
+        bottom: -13px;
+        left: 47px;
+        display: block;
+        width: 0;
+        border-color: #fff transparent;
+        border-style: solid;
+        border-width: 13px 13px 0;
+    }
+    .triangle-border.top:before {
+        top: -20px;
+        bottom: auto;
+        left: auto;
+        right: 40px;
+        border-width: 0 20px 20px;
+    }
+    .triangle-border.top:after {
+        top: -13px;
+        bottom: auto;
+        left: auto;
+        right: 47px;
+        border-width: 0 13px 13px;
+    }
+    .triangle-border.left:before {
+        top: 9px;
+        bottom: auto;
+        left: -25px;
+        border-color: transparent #9a9a9a;
+        border-width: 11px 25px 11px 0;
+    }
+    .triangle-border.left:after {
+        top: 11px;
+        bottom: auto;
+        left: -21px;
+        border-color: transparent #fff;
+        border-width: 9px 21px 9px 0;
+    }
+    .triangle-border.right:before {
+        top: 9px;
+        bottom: auto;
+        left: auto;
+        right: -25px;
+        border-color: transparent #9a9a9a;
+        border-width: 11px 0 11px 25px;
+    }
+    .triangle-border.right:after {
+        top: 11px;
+        bottom: auto;
+        left: auto;
+        right: -21px;
+        border-color: transparent #fff;
+        border-width: 9px 0 9px 21px;
+    }
+    .iconDetailsl {
+        float: left;
+        height: 33px;
+        width: 33px;
+    }
+    .iconDetailsr {
+        float: right;
+        height: 33px;
+        width: 33px;
+    }
+    .container2 {
+        width: 100%;
+        height: auto;
+        padding: -5%;
+    }
+    .menuList {
+        text-decoration: none;
+    }
+    .panel {
+        height: 50%;
+        font-family: LexiaLight, san-serif;
+        font-size: 1.2em;
+        background: #bb3a3a;
+        z-index: 1999;
+        position: fixed;
+        left: -15.625em;
+        width: 15.625em;
+    }
+    .wrap {
+        position: relative;
+    }
+    .panel ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+    }
+    .panel li {
+        border-bottom: 1px solid #FFF;
+        list-style-position: inside;
+        background: #bb3a3a;
+    }
+        .panel li:first-child:hover {
+            background: #fff;
+        }
+        .panel li:first-child {
+            padding-top: 10px;
+            padding-bottom: 10px;
+            background: #fff;
+            color: #000;
+            border: 1px solid #000;
+        }
+    .panel a:link, .panel a:visited {
+        color: #fff;
+    }
+    .panel li:hover {
+        background: none repeat scroll 0 0 #ffab35;
+    }
+    .title-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 2000;
+        width: 100%;
+        height: 25px;
+        color: #FFF;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        background-image: linear-gradient(rgb(201,19,15), #9b100d );
+        text-align: center;
+    }
+    .canvasHolder {
+        background: #fff;
+        border: 1px solid #aaa;
+        border-radius: 50px;
+        height: 75px;
+        margin-left: 60px;
+        overflow: hidden;
+        width: 75px;
+        margin-right: auto;
+        -webkit-mask-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAA5JREFUeNpiYGBgAAgwAAAEAAGbA+oJAAAAAElFTkSuQmCC); /* this fixes the overflow:hidden in Chrome/Opera */
+    }
+    .title-bar a {
+        text-decoration: none;
+        color: #FFF;
+    }
+    .header {
+        visibility: hidden;
+    }
+    .chatTitle {
+        position: relative;
+        top: -35px;
+        font-family: LexiaLight, san-serif;
+        font-size: 1.75em;
+    }
+    #lean_overlay {
+        position: fixed;
+        z-index: 100;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        background: #000;
+        display: none;
+    }
+    .modalWindow {
+        width: 200px;
+        margin-left: 50%;
+        margin-right: 0%;
+        padding: 30px;
+        display: block;
+        background: #FFF;
+        border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+        box-shadow: 0px 0px 4px rgba(0,0,0,0.7);
+        -webkit-box-shadow: 0 0 4px rgba(0,0,0,0.7);
+        -moz-box-shadow: 0 0px 4px rgba(0,0,0,0.7);
+        display: none;
+    }
+        .modalWindow img {
+            display: inline-block;
+        }
+    .modalCanv {
+        width: 100px;
+        height: 100px;
+        margin-left: 0px;
+        margin-right: auto;
+    }
+    .box-shadow-menu {
+        position: relative;
+        padding-left: 2em;
+    }
+        .box-shadow-menu:before {
+            font-size: 30px;
+            content: "";
+            position: absolute;
+            top: .1em;
+            left: 0;
+            width: 1em;
+            height: .125em;
+            border-top: .375em double #FFF;
+            border-bottom: .138em solid #FFF;
+        }
+    .navItem {
+        text-decoration: none !important;
+        font-family: lexia;
+    }
+    .img-circular {
+        width: 150px;
+        height: 150px;
+        background-size: cover;
+        border-radius: 100px;
+        -webkit-border-radius: 100px;
+        -moz-border-radius: 100px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .triangle-border.left, .triangle-border.right {
+        margin-left: 30px;
+        margin-right: 30px;
+    }
+    .addChatBtn {
+        background: #d93442;
+        background-image: -webkit-linear-gradient(top, #d93442, #9e1420);
+        background-image: -moz-linear-gradient(top, #d93442, #9e1420);
+        background-image: -ms-linear-gradient(top, #d93442, #9e1420);
+        background-image: -o-linear-gradient(top, #d93442, #9e1420);
+        background-image: linear-gradient(to bottom, #d93442, #9e1420);
+        -webkit-border-radius: 28;
+        -moz-border-radius: 28;
+        border-radius: 28px;
+        font-family: Georgia;
+        color: #ffffff;
+        font-size: 18px;
+        padding: 3px 20px 5px 20px;
+        text-decoration: none;
+    }
+    .inputArea {
+        background-color: white;
+        width: 100%;
+        padding: 10px;
+        margin-left: 0;
+        margin-right: auto;
+    }
+</style>
+<head>
+    <link type="text/css" rel="stylesheet" media="all" href="https://portal.ombiel.co.uk/assets/LancasterStudents/Libraries/jquery.mmenu.css" />
+    <link type="text/css" rel="stylesheet" media="all" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+    <script type="text/javascript" src="https://portal.ombiel.co.uk/assets/LancasterStudents/Libraries/jquery.mmenu.min.js"></script>
+    <!-- Main Content Goes here -->
+    <script src="https://gerrard.lancs.ac.uk/ilancasterapidev/bundles/jquery?v=FVs3ACwOLIVInrAl5sdzR2jrCDmVOWFbZMY6g6Q0ulE1"></script>
+    <script src="https://portal.ombiel.co.uk/assets/LancasterStudents/Libraries/jquery.leanModal.min.js"></script>
+    <script src="https://gerrard.lancs.ac.uk/ilancasterapidev/bundles/bootstrap?v=2Fz3B0iizV2NnnamQFrx-NbYJNTFeBJ2GM05SilbtQU1"></script>
+    <script src="https://gerrard.lancs.ac.uk/ilancasterapidev/Scripts/jquery.signalR-2.2.0.min.js"></script>
+    <script src="https://portal.ombiel.co.uk/assets/LancasterStudents/Libraries/jquery.mmenu.min.js"></script>
+    <script src="https://portal.ombiel.co.uk/assets/LancasterStudents/Libraries/big-slide.js"></script>
+    <script src="https://portal.ombiel.co.uk/assets/LancasterStudents/AET_Files/jquery.visible.min.js"></script>
+    <!--Reference the autogenerated SignalR hub script. -->
+    <script src="https://gerrard.lancs.ac.uk/ilancasterapidev/signalr/hubs"></script>
+    <!-- Example ListView -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script>
+  // window.onerror = function (err) {
+      // console.log(err)
+  //return true;
+   // }
+    </script>
+    {% endblock %}
+    {% block main_content %}
+    {% set email = aek.campusm_user_email %}
+     {% set places_service = aek.create_service("https://ilancasteradmin.lancaster.ac.uk/production/api/auth/login?username="~email|url_encode~"&password=sdjdf5$jsdfio[po234234JKISDFfj32&AppID=25") %}
+    {{ places_service.set_method("post") }}
+    {%set token = places_service.json["token"]%}
+    {% set authString =  "token="~token %}
+
+    {% set service = aek.create_soap_client("https://yavin.lancs.ac.uk/Token/TokenStore.asmx?WSDL","Generatetoke") %}
+    {% set e = aek.campusm_user_email %}
+    {{ service.set_parameter('Username', e)}}
+    {{ service.set_parameter('Password', '9SV7WOZuR1jtXioLIe1v')}}
+    {{ service.set_parameter('Application', 'Chat')}}
+    {% set token = service.response.GeneratetokeResult %}
+
+
+    {% set email = aek.campusm_user_email %}
+
+    <script type="text/javascript" data-defer="true">
+
+    //A global - holds the users email
+    var user_email = "{{ aek.campusm_user_email }}";
+ 	//A global - holds the signalR chat instance
+    var chat;
+    /**
+    * chatModule 
+    * in theory contains everything there is to 
+    * know about a chat.
+    * maintains a list of users in the room
+    * and info about them
+    */   
+    var chatModule = (function () {
+        console.log('being created!')
+    	var myId;
+    	//holds the date of the last message in the screen
+    	var lastMessageDate;
+    	//url of the connection
+        var connectionUrl = "https://gerrard.lancs.ac.uk/ilancasterapidev/signalr"
+        //The name of the chatroom - taken from the url. Defaults to lobby.
+        var chatroomName = getParam('room');
+        //An array of all the users in the room
+        var users = [];
+        //Debug - 1 yes. Decides if we should log.
+        var debug = 1;
+      
+      
+      var getMyId = function(){
+        	return myId;
+        }
+        var setMyId = function(id){
+           myId = id
+        }
+        var getLastMessageDate = function (){
+          return lastMessageDate;
+        }
+        var setLastMessageDate = function(date){
+          lastMessageDate = date;
+        }
+        var getDebug =  function(){
+           return debug;
+        }
+        var getConnectionURL=function(){
+        		return connectionUrl;
+        	}
+        var getUsersInRoom =  function () {
+                return users;
+            }
+        var addUserToRoom = function (user) {
+               if(!containsObject(user,users)){
+                    users.push(user)
+                }
+                return users;
+            }
+      var getChatName  = function () {
+                if(chatroomName == "" || chatroomName == null || chatroomName == undefined){
+                       return "Lobby";
+                }
+                return chatroomName;
+    } 
+           
+            
+        return {
+        	getMyId: getMyId,
+                setMyId: setMyId,
+        	getLastMessageDate:getLastMessageDate,
+                setLastMessageDate:setLastMessageDate,
+                getDebug:getDebug,
+                getConnectionURL:getConnectionURL,
+                getUsersInRoom:getUsersInRoom,
+        	getChatName:getChatName,
+                addUserToRoom:addUserToRoom,
+        }
+    })();
+    
+      	/**
+    * infolog
+    * simple way to turn debug logs
+    * on and off
+    * takes a message
+    */   
+    function infolog(msg){
+      
+    if(chatModule.getDebug()){
+    		console.log(msg)
+    	}
+    }
+      
+      
+      
+      
+    function clickedOldMessages(){
+       console.log('clicked')
+       $('#getOld').remove()
+       console.log(chat.server.getOldMessages)
+       console.log(chatModule.getChatName())
+         console.log(chatModule.getLastMessageDate())
+       chat.server.getOldMessages(chatModule.getChatName(), chatModule.getLastMessageDate())
+       infolog("called")
+      }
+      
+    /**
+    * getParam 
+    * takes a paramater name as a string
+    * retuns the value of the param
+     */
+    function getParam ( sname ) {
+        //infolog('get param')
+        var params = location.search.substr(location.search.indexOf("?")+1);
+        var sval = "";
+        params = params.split("&");
+        // split param and value into individual pieces
+            for (var i=0; i<params.length; i++) {
+                temp = params[i].split("=");
+                if ( [temp[0]] == sname ) { sval = temp[1]; }
+            }
+    	return sval;
+    }     
+    /**
+    * containsObject 
+    * returns boolean
+    * checks if object is in array
+    */   
+    function containsObject(obj, list) {   
+        var x;
+        for (x in list) {
+            if (list.hasOwnProperty(x) && list[x] === obj) {
+                return true;
+            }
+        }
+        return false;
+    }    
+    /**
+    * createAvatar 
+    * takes message id - users name, and a size
+    * creates an avatar and returns the canvas object it's on
+    */ 
+    function createAvatar(messageID, name, size,photo) {
+    	console.log('phiti',photo)
+
+    	if(photo != null){
+    		console.log('photo isnt null')
+    		var canvas = document.getElementById(messageID).firstElementChild;
+    		var ctx = canvas.getContext("2d");
+
+			var image = new Image();
+			image.src = "data:image/  png;base64,"+photo;
+			image.onload = function() {
+    			ctx.drawImage(image, 0, 0);
+			};
+
+    	return canvas;
+    	}
+        var canvas = document.getElementById(messageID).firstElementChild;
+        console.log(canvas)
+        var colours = ["#1abc9c", "#2ecc71", "#3498db", "#9b59b6", "#34495e", "#16a085", "#27ae60", "#2980b9", "#8e44ad", "#2c3e50", "#f1c40f", "#e67e22", "#e74c3c", "#95a5a6", "#f39c12", "#d35400", "#c0392b", "#bdc3c7", "#7f8c8d"];
+        if (name.indexOf(' ') >= 0) {
+            nameSplit = name.split(" "),
+            initials = nameSplit[0].charAt(0).toUpperCase() + nameSplit[1].charAt(0).toUpperCase();
+        } else {
+            initials = name.charAt(0).toUpperCase();
+        }
+        var charIndex = initials.charCodeAt(0) - 65, colourIndex = charIndex % 19;
+        infolog(canvas)
+        var context = canvas.getContext("2d");
+        var canvasWidth = size,canvasHeight = size,canvasCssWidth = canvasWidth,canvasCssHeight = canvasHeight;
+        if (window.devicePixelRatio) {
+            $(canvas).attr("width", canvasWidth * window.devicePixelRatio);
+            $(canvas).attr("height", canvasHeight * window.devicePixelRatio);
+            $(canvas).css("width", canvasCssWidth);
+            $(canvas).css("height", canvasCssHeight);
+            context.scale(window.devicePixelRatio, window.devicePixelRatio);
+        }
+      	context.fillStyle = colours[colourIndex];
+		context.fillRect(0, 0, canvas.width, canvas.height);
+		context.font = "20px Arial";
+		context.textAlign = "center";
+		context.fillStyle = "#FFF";
+        context.fillText(initials, canvasCssWidth / 2, canvasCssHeight / 1.5);
+
+    	return canvas;
+   	}
+   
+    /**
+    * initialiseConnection
+    * called right at the start
+    * initialises the signalR connection
+    */ 
+    function initialiseConnection(){
+    	infolog("initialising connection...")
+    	$.connection(chatModule.getConnectionURL())
+    	chat = $.connection.chat; //initialise the chat connection
+    	$.connection.hub.url = chatModule.getConnectionURL();     
+        infolog('connection.hub.start')   
+        $.connection.hub.qs = {
+            "token": document.getElementById('token').value
+        };	 
+        $.connection.hub.start({
+            jsonp: false
+        })
+        .done(function () {
+        	infolog('connected...')
+        	$("#chatWindow").val("Connected \n");
+        	chat.state.currentChatRoom = chatModule.getChatName();
+          console.log(":)")
+                console.log(chat.state.currentChatRoom)
+        	var name = $("#txtNickName").val();
+        	
+        	chat.server.joinRoom(chatModule.getChatName())
+        	.done(function (e) {
+                infolog('joined room...')
+        	})
+        	.fail(function(e){ 
+            	infolog("E:" + e)
+            	infolog(e.stack)
+            	infolog(e)
+            });       
+        })
+        .fail(function (e) {
+            infolog(e)
+            alert("Couldn't connect");
+        });
+    }
+
+    /**
+    * configureUI
+    * called right at the start
+    * binds key presses, button clicks etc
+    * configures toastr
+    */ 
+    function configureUI(){
+    	infolog("configureing the UI...")
+    	//Bind the keypress of Enter to be send
+        $(document).keypress(function (e) {
+            if (e.which == 13) {
+                $("#submitmsg").click();
+            }
+        });
+        //set the toastr options.
+        toastr.options = {
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "positionClass": "toast-top-full-width",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut",
+        };
+        //Define submit message behaviour
+        $("#submitmsg").click(function () {
+            if ($("#messageTextBox").val()) {  
+               chat.server.send($("#messageTextBox").val(), chatModule.getChatName())
+                $("#messageTextBox").val("")
+                document.getElementById('submitmsg').scrollIntoView(false);
+            }
+        });
+        
+    //  console.log( "$('#getOld')")
+      //  console.log( $('#getOld'))
+        //$('#getOld').click(function() {
+ // alert( "Handler for .click() called." );
+//});
+          //  alert('hi')
+            //console.log('clicked')
+            //$('#getOld').remove()
+            //infolog(chat.server.getOldMessages)
+            //chat.server.getOldMessages(chatModule.getChatName(), chatModule.getLastMessageDate())
+            //infolog("called")
+    //   })
+    }
+
+    /**
+    * configureClientMethods
+    * creates and binds all the methods
+    * the server calls on us.
+    * each is documented
+    */ 
+    function configureClientMethods()	{
+    	infolog("configureing client methods...")
+    	//Server calls us with the name of a chatroom
+    	chat.client.addChatRoom = function (chatRoom) { 
+    		//if the callback chatroom is the current chatroom,
+            if (chatRoom == chatModule.getChatName()) { 
+                //TODO: Handle UI name
+            } else {
+                //TODO: Handle UI name
+            }
+        }       
+
+        //Server calls when a new user is connected
+        chat.client.onNewUserConnected = function (room, user) {
+              infolog('New User Connected')
+              chatModule.addUserToRoom(user);
+        }     
+
+        //Server calls when a new message is added
+        chat.client.addMessage = function (room, msgDetail) {
+            infolog("------ Message Details --------")
+            infolog(msgDetail)
+            addMessageToChatWindow(msgDetail.Message, msgDetail.DisplayName, msgDetail.FromID, msgDetail.Id, chatModule.getChatName(), "addMessage")
+        }
+
+        //Server calls with old messages
+        chat.client.onOldMessages = function (id, name, userInRoom, messagesInRoom) {
+            infolog("messagesInRoom")
+            infolog(messagesInRoom)
+            for (var i = 0; i < messagesInRoom.length; i++) {
+                chatModule.setLastMessageDate(messagesInRoom[0].MessageTime)
+                addMessageToChatWindow(messagesInRoom[i].Message, messagesInRoom[i].DisplayName, messagesInRoom[i].FromID, messagesInRoom[i].Id, chat, "onOldMessages");
+            }           
+            if (messagesInRoom.length == 0){
+                $(".commentArea").prepend('<h3 class="center">Sorry, nothing more here.</h3>')
+            } else {               
+                $(".commentArea").prepend('<button id="getOld" onclick="clickedOldMessages()">Get Older</button>')            
+            }      
+        }
+
+        //Server calls when we are connected to the room
+        chat.client.onRoomConnected = function (id, name, usersInRoom, messagesInRoom) {
+            infolog("--------Messages In Room:-------")
+            infolog(messagesInRoom)
+            infolog("--------Users In Room:-------")
+            infolog(usersInRoom)
+			for (var i = 0; i < usersInRoom.length; i++) {
+                infolog('Adding User')
+                chatModule.addUserToRoom(usersInRoom[i])
+            }
+            for (var i = 0; i < messagesInRoom.length; i++) {
+                addMessageToChatWindow(messagesInRoom[i].Message, messagesInRoom[i].DisplayName, messagesInRoom[i].FromID, messagesInRoom[i].Id, chat, "onRoomConnected");
+                chatModule.setLastMessageDate(messagesInRoom[0].MessageTime)
+            }
+            document.getElementById("base").className = "inputArea";
+            document.getElementById('base').scrollIntoView(false);
+        }
+        //Server calls to tell us what room we are in
+        chat.client.roomsIAmIn = function (id, rooms) {//This gives us the USER id and a list of rooms they are in.
+            infolog('chat.client.roomsIAmIn')
+            chatModule.setMyId(id);
+            infolog(rooms)
+            for (var i = 0; i < rooms.length; i++) { //for each room the current user is in, append it to the navigation drawer
+                $("#menuList").append('<li><a class="navItem" href="#">' + rooms[i] + '</a></li>');
+            }
+            $('.menu-link').bigSlide(); //init nav drawer
+        }
+	}
+
+	function appendLeftMessage(messageID,from,msg)	{
+		var x = "<div class=\"container2\"  id=\"" + messageID + "\"><canvas class=\"iconDetailsl\"></canvas><div style=\"margin-left:60px;word-wrap: break-word;\"><p class=\"triangle-border L left\"><b>" + from + ":   </b>" + " " + msg + "</p></div></div>";
+		$(".commentArea").append(x);		
+	}
+
+	function prependLeftMessage(messageID,from,msg){
+		//if($('#getOld').length()){
+          //  $('#getOld').remove();
+        //}
+        var x = "<div class=\"container2\"  id=\"" + messageID + "\"><canvas class=\"iconDetailsl\"></canvas><div style=\"margin-left:60px;word-wrap: break-word;\"><p class=\"triangle-border L left\"><b>" + from + ":   </b>" + " " + msg + "</p></div></div>";
+        $(".commentArea").prepend(x);	
+	}
+
+	function appendRightMessage(messageID,msg)	{
+		var x = "<div class=\"container2\" id=\"" + messageID + "\"><canvas id=\"myProPic\" class=\"iconDetailsr\"></canvas><div style=\"margin-right:60px;word-wrap: break-word;\"><p class=\"triangle-border R right\"> <b>You:</b>   " + " " + msg + "</p></div></div>";
+		$(".commentArea").append(x);	
+	}
+
+	function prependRightMessage(messageID,msg)	{
+		//if($('#getOld').length()){
+          //     $('#getOld').remove();
+        //}
+		var x = "<div class=\"container2\" id=\"" + messageID + "\"><canvas id=\"myProPic\" class=\"iconDetailsr\"></canvas><div style=\"margin-right:60px;word-wrap: break-word;\"><p class=\"triangle-border R right\"> <b>You:</b>   " + " " + msg + "</p></div></div>";
+		$(".commentArea").prepend(x);		
+	}
+
+	function createModal(userId,messageID,from,uid)	{
+		var anchorString = '<a style="display:none;" href="#modal' + userId + '" rel="' + messageID + '"></a>';
+		var modalProfilePic = '<div class="img-circular" "></div>';
+		//if the modal for this user does not already exist
+		if (!$('#modal' + userId).length) {
+			//build it 
+        	var modalWindow = '<div class="modalWindow" id="modal' + userId + '"><div class="canvasHolder" id = "canvasHolder' + userId + '"><canvas id="modalCanv" class="modalCanv" ></canvas></div><br> <b>Name:</b>' + ' ' + from + ' <br><br><input type="button" value="Private Chat"><input type="button" value="Block this user"> </div>';
+        	//and append it!
+        	$(".commentArea").append(modalWindow);
+           	
+           	createAvatar("canvasHolder" + userId, from, 75,uid);
+        }
+        $(".commentArea").append(anchorString);
+        //This is initially hidden until the profile picture is clicked.
+        $("a[rel*=" + messageID + "]").leanModal();
+	}
+	
+
+	function search(nameKey, myArray){
+		console.log("nameKey",nameKey)
+		console.log("myArray",myArray)
+    	for (var i=0; i < myArray.length; i++) {
+    		console.log("myArray[i].UserID",myArray[i].UserID)
+    	    if (myArray[i].UserID == nameKey) {
+    	    	console.log('found')
+    	        return myArray[i];
+    	    }
+    	}
+	}
+
+	//**Takes a message and sender, and appends it to the thread of messages in the current chat window**//
+	//FROM IS THE DISPLAY NAME ID IS THE FROM USER ID
+    function addMessageToChatWindow(msg, from, id, messageID, chat, type) {
+        console.log('adding message')
+       	var fromUserObj = search(id, chatModule.getUsersInRoom());
+
+        console.log('user obj')
+        console.log(fromUserObj)
+        
+        if (fromUserObj.DisplayName == null || fromUserObj.DisplayName == undefined) {
+            from = "Chat User";
+        } else {
+        	from = fromUserObj.DisplayName
+        }
+        
+
+        //if we are showing the loading spinner
+        if ($('#spinner').length) {
+            $(".commentArea").html('');
+            $(".commentArea").append('<button id="getOld" onclick="clickedOldMessages()">Get Older</button>')
+        }   
+        //If message from this user
+        if (id == chatModule.getMyId()) { 		
+			//If first load or new message
+			if (type != "onOldMessages") {			
+                          appendRightMessage(messageID,msg);
+                          createAvatar(messageID, from, 33,fromUserObj.Photo64)								
+			} else { //If old message		
+				prependRightMessage(messageID,msg)
+                createAvatar(messageID, from, 33,fromUserObj.Photo64)		
+			}
+		} else { // If messge is from another user	  
+           
+           if (type != "onOldMessages") { //If first load or new message 
+               
+                createModal(id, messageID, from,fromUserObj.Photo64)
+                appendLeftMessage(messageID,from,msg)
+          	
+                
+          	        var canvas = createAvatar(messageID, from, 33,fromUserObj.Photo64)	
+                	canvas.addEventListener('click', function () {
+                
+                	$("a[rel*=" + messageID + "]").click();
+                	    infolog("Clicked")
+                	}, false);
+				
+			
+
+			} else { //This is an old message
+				
+				createModal(id, messageID, from,fromUserObj.Photo64)
+                prependLeftMessage(messageID,from,msg)
+                var canvas = createAvatar(messageID, from, 33,fromUserObj.Photo64)       
+                canvas.addEventListener('click', function () {
+                
+                $("a[rel*=" + messageID + "]").click();     
+                        infolog("Clicked")
+                }, false); 
+            }
+    	}
+        //if the messages aren't being displayed onload (it's a new message)
+        console.log(';;')
+        console.log(from)
+        console.log(chatModule.getMyId())
+        if (type != "onRoomConnected" && type != "onOldMessages" && id != chatModule.getMyId() ) {
+            
+            document.getElementById('base').scrollIntoView(false);
+   			
+   			if (id != chatModule.getMyId) {
+                
+                toastr.options.onclick = function () {
+                    document.getElementById('base').scrollIntoView(false);
+                };
+                
+                //trim the message accordingly
+            	if (msg.length > 15) {
+                	x = msg.substring(0, 15) + "...";
+            	} else {
+                	x = msg
+            	}
+            	
+            	toastr.info('New Message: ' + x);
+            	x = "";
+            
+            }
+            
+        } else {
+            //Otherwise if the messages are being shown on initial load, scroll to the textbox
+            //document.getElementById('base').scrollIntoView(false);
+        }
+    }
+
+    function configureHubMethods(){
+    	$.connection.hub.error(function (error) {
+            toastr.error('Error. Please refresh the screen, If this persists please contact iLancaster');
+            infolog(error)
+        });
+        $.connection.hub.connectionSlow(function () {
+            toastr.warning('We have identified you are on a slow connection, for best experience please use WiFi!');
+        });
+        $.connection.hub.disconnected(function () {
+            toastr.error('Disconnected. Please refresh the screen to conect, If this persists please contact iLancaster');
+             window.setInterval(function () {
+        		infolog("refresh")
+        		$.connection.hub.start({
+            		jsonp: false
+        		})
+    		}, 10000);
+        });
+    }
+     
+
+
+    //All starts here
+    $(document).ready(function () {
+    	
+    	infolog('The document is ready, we are going to join the room:')
+        infolog(chatModule.getChatName())    
+        
+        initialiseConnection()
+        configureUI()
+        configureClientMethods()
+        configureHubMethods()	
+  		
+  		//Run on chat load, first function (start here!)
+        if (window.jQuery) {
+            infolog('jquery inclided')
+        } else {
+            infolog('no jquery :(')
+        }
+       	
+       	infolog("--------Server Functions:-------");
+        infolog(chat.server)
+        infolog("--------Client Functions:-------");
+        infolog(chat.client)       
+    
+    });
+  
+    </script>
+    <div class="bodWrapper">
+        <div class="commentArea"><div class="loadContainer"><h1 class="loadingText">Joining Chatroom</h1><img class="loadingSpinner" id="spinner" src="https://portal.ombiel.co.uk/assets/LancasterStudents/AET_Files/712.GIF" /></div></div>
+        <div class="inputArea inputBoxInitial" style="margin-left:-10px" id="base">
+            <input name="usermsg" type="text" id="messageTextBox" size="63" />
+            <br>
+            <input name="submitmsg" type="button" id="submitmsg" value="Send" />
+            <input type="hidden" class="" name="token" value="{{token}}" id="token">
+        </div>
+    </div>
+
+    <script>
+    $(function () {
+                // leanModal v1.1 by Ray Stone - http://finelysliced.com.au
+                // Dual licensed under the MIT and GPL
+                (function ($) {
+                    $.fn.extend({
+                        leanModal: function (options) {
+                            var defaults = { top: 100, overlay: 0.5, closeButton: null }; var overlay = $("<div id='lean_overlay'></div>"); $("body").append(overlay); options = $.extend(defaults, options); return this.each(function () {
+                                var o = options; $(this).click(function (e) {
+                                    var modal_id = $(this).attr("href"); $("#lean_overlay").click(function () { close_modal(modal_id) }); $(o.closeButton).click(function () { close_modal(modal_id) }); var modal_height = $(modal_id).outerHeight(); var modal_width = $(modal_id).outerWidth();
+                                    $("#lean_overlay").css({ "display": "block", opacity: 0 }); $("#lean_overlay").fadeTo(200, o.overlay); $(modal_id).css({ "display": "block", "position": "fixed", "opacity": 0, "z-index": 11000, "left": 50 + "%", "margin-left": -(modal_width / 2) + "px", "top": o.top + "px" }); $(modal_id).fadeTo(200, 1); e.preventDefault()
+                                })
+                            }); function close_modal(modal_id) { $("#lean_overlay").fadeOut(200); $(modal_id).css({ "display": "none" }) }
+                        }
+                    })
+                })(jQuery);
+                $("#go").leanModal();
+            });
+    </script>
+    <!-- End Main Content -->
+    {% endblock %}
