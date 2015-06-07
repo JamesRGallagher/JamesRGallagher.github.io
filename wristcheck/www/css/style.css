@@ -30,7 +30,7 @@ src: url("../fonts/Mohave-SemiBold.otf") format("opentype");
   font-size:25px !important;
 }
 .bar-header {
-  height: 55px !important
+  height: 57px !important
 }
 .bar-header > * {
   margin-top: 20px !important;
@@ -115,7 +115,7 @@ src: url("../fonts/Mohave-SemiBold.otf") format("opentype");
   font-size:12px !important;
 }
 .item-avatar{
-  height:57px !important;
+  height:53px !important;
   min-height:50px;
 }
 .avatar-img{
