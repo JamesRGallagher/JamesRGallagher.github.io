@@ -109,6 +109,20 @@ src: url("../fonts/Mohave-SemiBold.otf") format("opentype");
   margin-bottom: -45px;
 }
 
+.item h2 {
+  font-size:12px !important;
+}
+.item-avatar{
+  height:57px !important;
+  min-height:50px;
+}
+.avatar-img{
+  top:11px !important;
+}
+.item p {
+  font-size:11px;
+}
+
 .image-loader-container{
   padding-top: 125px;
   min-height:300px;
