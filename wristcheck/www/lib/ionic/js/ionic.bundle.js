@@ -49862,7 +49862,7 @@ function($scope, $attrs, $ionicSideMenuDelegate, $ionicPlatform, $ionicBody, $io
       // Android 4.3 and below requires the element to be
       // added as an html string, rather than dynmically
       // building up the svg element and appending it.
-      $element.html(container.innerHTML);
+      $element.html('<img src="clock.svg"></img>');
 
       this.start();
 

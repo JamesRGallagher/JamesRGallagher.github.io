@@ -1,4 +1,9 @@
+@font-face {
+font-family: "Mohave";
+src: url("../fonts/Mohave-SemiBold.otf") format("opentype");
+}
 .fake-statusbar {
+
   height: 20px;
   max-height: 20px;
   font-size: 12px;
@@ -20,6 +25,10 @@
 .fake-statusbar .pull-left { float: left; }
 .fake-statusbar .pull-right { float: right; }
 
+.title{
+  font-family:"Mohave";
+  font-size:25px !important;
+}
 .bar-header {
   height: 64px !important;
 }
@@ -53,13 +62,14 @@
 }
 
 .bar {
-   background-color: #2C396D;
+   background-color: #2ECC71;
    border-color:
 }
 
 .full-image{
    overflow-x: hidden; overflow-y: hidden;
   margin-bottom:-5px;
+ 
 }
 .bar .title {
 	color:white !important;
@@ -85,4 +95,35 @@
   overflow:hidden;
   max-width: 500px;
   margin:0 auto;
+}
+
+.image-loader-container{
+  padding-top: 125px;
+  min-height:400px;
+  background-color:#2ECC71;
+}
+.image-loader{
+  margin-left: 47%;
+}
+.tabs{
+  border-top: 0px;
+}
+.tab-nav{
+  background-color:#2ECC71;
+}
+.tab-item-active{
+  background-color:#27AE60;
+
+}
+.icon{
+  color:white;
+}
+.ion-ios-heart-outline{
+  color:#364685;
+}
+.ion-ios-chatbubble-outline{
+  color:#364685;
+}
+.tab-title{
+  color:white;
 }
