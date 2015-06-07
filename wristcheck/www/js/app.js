@@ -27,6 +27,16 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','i
       }
     });
   };
+   var shrinkFooter = function(header, content, amt, max) {
+    amt = Math.min(44, amt);
+    fadeAmt = 1 - amt / 44;
+    ionic.requestAnimationFrame(function() {
+      header.style[ionic.CSS.TRANSFORM] = 'translate3d(0, ' + amt + 'px, 0)';
+      for(var i = 0, j = header.children.length; i < j; i++) {
+        header.children[i].style.opacity = fadeAmt;
+      }
+    });
+  };
 
   return {
     restrict: 'A',
@@ -35,6 +45,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','i
       var shrinkAmt;
       
       var header = $document[0].body.querySelector('.bar-header');
+      var footer = $document[0].body.querySelector('.tab-nav');
+      console.log(footer)
       var headerHeight = header.offsetHeight;
       
       $element.bind('scroll', function(e) { 
@@ -51,7 +63,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','i
           } 
           
           shrink(header, $element[0], shrinkAmt, headerHeight); //do the shrinking   
-        
+          shrinkFooter(footer, $element[0], shrinkAmt, headerHeight); //do the shrinking   
+
       });
     }
   }

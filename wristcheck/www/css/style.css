@@ -72,6 +72,7 @@ src: url("../fonts/Mohave-SemiBold.otf") format("opentype");
  
 }
 .bar .title {
+  top:-10px;
 	color:white !important;
 }
 .bar-header {
@@ -79,10 +80,18 @@ src: url("../fonts/Mohave-SemiBold.otf") format("opentype");
     border-bottom-color: transparent !important;
     background-image: none;
     border-bottom: none;
+ 
+}
+
+.card{
+      box-shadow: 0 4px 4px -2px #807d7d;
+         -moz-box-shadow: 0 4px 4px -2px #807d7d;
+    -webkit-box-shadow: 0 4px 4px -2px #807d7d;
 }
 
 .item-body
 {
+ 
    overflow-x: hidden; overflow-y: hidden;
   padding-left: 0px;
   padding-top: 0px;
@@ -90,17 +99,20 @@ src: url("../fonts/Mohave-SemiBold.otf") format("opentype");
   padding-right: 0px;
 
 }
-
+.full-image{
+  height:400px;
+}
 .width-container{
   overflow:hidden;
   max-width: 500px;
   margin:0 auto;
+  margin-bottom: -45px;
 }
 
 .image-loader-container{
   padding-top: 125px;
   min-height:400px;
-  background-color:#2ECC71;
+  background-color:#27AE60 !important;
 }
 .image-loader{
   margin-left: 47%;
