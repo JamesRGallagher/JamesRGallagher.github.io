@@ -15,7 +15,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','i
   }
 })
 
-
 .directive('headerShrink', function($document) {
   var fadeAmt;
 

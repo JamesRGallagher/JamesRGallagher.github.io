@@ -7,27 +7,27 @@ angular.module('starter.services', [])
     id: 0,
     name: 'Ben Sparrow',
     lastText: 'You on your way?',
-    face: 'http://i.imgur.com/K0IPn38.jpg'
+    face: 'https://placeholdit.imgix.net/~text?txtsize=38&txt=400%C3%97400&w=400&h=400'
   }, {
     id: 1,
     name: 'Max Lynx',
     lastText: 'Hey, it\'s me',
-    face: 'http://farm9.staticflickr.com/8050/8134717482_f17442d0cc_z.jpg'
+    face: 'https://placeholdit.imgix.net/~text?txtsize=38&txt=400%C3%97400&w=400&h=400'
   },{
     id: 2,
     name: 'Adam Bradleyson',
     lastText: 'I should buy a boat',
-    face: 'http://blog.dreamchrono.com/wp-content/uploads/2014/04/omega-speedmaster-professional-calibre-321-wristshot-02.jpg'
+    face: 'https://placeholdit.imgix.net/~text?txtsize=38&txt=400%C3%97400&w=400&h=400'
   }, {
     id: 3,
     name: 'Perry Governor',
     lastText: 'Look at my mukluks!',
-    face: 'https://pbs.twimg.com/profile_images/598205061232103424/3j5HUXMY.png'
+    face: 'https://placeholdit.imgix.net/~text?txtsize=38&txt=400%C3%97400&w=400&h=400'
   }, {
     id: 4,
     name: 'Mike Harrington',
     lastText: 'This is wicked good ice cream.',
-    face: 'https://pbs.twimg.com/profile_images/578237281384841216/R3ae1n61.png'
+    face: 'https://placeholdit.imgix.net/~text?txtsize=38&txt=400%C3%97400&w=400&h=400'
   }];
   return {
     all: function() {
