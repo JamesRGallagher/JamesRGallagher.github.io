@@ -1,0 +1,69 @@
+
+<ion-view view-title="{{server.name}}">
+  <ion-content class="padding">
+
+
+   <div class="list card">
+
+  <a href="#" class="item item-icon-left">
+    <i class="icon ion-person"></i>
+    <span class="item-note" style="float:center
+    "> Name:</span> <span style="float:right
+    ">     {{server.name}} </span>
+  </a>
+
+  <a href="#" class="item item-icon-left">
+    <i class="icon ion-earth"></i>
+    <span class="item-note" style="float:center
+    ">IP Address: </span> <span style="float:right
+    "> {{server.ip}} </span>
+  </a>
+
+  <a href="#" class="item item-icon-left">
+    <i class="icon ion-arrow-swap"></i>
+     <span class="item-note" style="float:center
+    ">Switchport: </span> <span style="float:right
+    "> {{server.port}} </span>
+  </a>
+
+  <a href="#" class="item item-icon-left">
+    <i class="icon ion-log-in"></i>
+     <span class="item-note" style="float:center
+    ">Bandwidth In:</span> <span style="float:right
+    "> {{server.bwIn}} </span>
+  </a>
+    <a href="#" class="item item-icon-left">
+    <i class="icon ion-log-out"></i>
+    <span class="item-note" style="float:center
+    ">Bandwidth Out:</span> <span style="float:right
+    ">  {{server.bwOut}} </span>
+  </a>
+   <a href="#" class="item item-icon-left">
+    <i class="icon ion-arrow-right-c"></i>
+    <span class="item-note" style="float:center
+    "> Traffic In:</span>  <span style="float:right
+    "> {{server.tIn}} </span>
+  </a>
+    <a href="#" class="item item-icon-left">
+    <i class="icon ion-arrow-return-left"></i>
+    <span class="item-note" style="float:center
+    ">Traffic Out:</span> <span style="float:right
+    ">  {{server.tOut}} </span>
+  </a>
+    <a href="#" class="item item-icon-left">
+    <i class="icon ion-model-s"></i>
+    <span class="item-note" style="float:center
+    ">Total Traffic:</span> <span style="float:right
+    "> {{server.tTotal}} </span>
+  </a>
+
+   
+
+</div>
+<div class="button-bar">
+  <button ng-if="server.reset" class="button button-assertive"  ng-click="showConfirm()">Reset</button>
+  <a class="button button-calm" href="#/tab/servers/stats/{{server.id}}" >Stats</a>
+</div>
+  </ion-content>
+
+</ion-view>

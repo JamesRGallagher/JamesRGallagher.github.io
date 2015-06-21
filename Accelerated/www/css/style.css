@@ -1,0 +1,51 @@
+.color-demo {
+        float: right;
+        width: 10px;
+        height: 10px;
+        border-radius: 4px;
+        border-width: 1px;
+        border-style: solid;
+}
+.blue {
+background-color: #387ef5;
+border-color: #0c63ee; 
+}
+.test{
+	height:100%;
+	width:auto;
+}
+.button-bar{
+font-size: 10px !important;
+
+}
+.graphBtn{
+        font-size: 9px;
+
+}
+#graph{
+        
+        width:100%;
+}
+
+.green {
+color: #66cc33;
+
+}
+.red {
+color: #ef4e3a;
+
+}
+
+.grey{
+color: grey;
+	
+}
+	
+.orange{
+
+color: #f0b840;
+
+}
+.indicator{
+font-size: 18px;
+}

@@ -1,0 +1,16 @@
+<ion-view title ="tab-dash" view-title="Accelerated IT : Servercenter App">
+  <ion-content>
+  <ion-refresher
+    pulling-text="Pull to refresh..."
+    on-refresh="doRefresh()">
+  </ion-refresher>
+ <div class="list">
+
+  <a class="item item-icon-left" ng-repeat="server in servers" href="#/tab/servers/{{server.id}}">
+    <i style="font-size:18px" class="icon ion-record {{server.color}}"></i>
+    <h2>{{server.name}} </h2>
+    <p>{{server.customName}}</p>
+  </a>
+    </div>
+  </ion-content>
+</ion-view>

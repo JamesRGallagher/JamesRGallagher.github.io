@@ -1,0 +1,2399 @@
+\documentclass[a4paper]{article}
+\setcounter{secnumdepth}{5}
+\setcounter{tocdepth}{3}
+
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{usecases}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage[margin=1 in]{geometry}
+\usepackage[affil-it]{authblk}
+
+\usepackage{memhfixc}
+
+  \usepackage{courier}
+ \lstset{
+         basicstyle=\footnotesize\ttfamily, % Standardschrift
+         %numbers=left,               % Ort der Zeilennummern
+         numberstyle=\tiny,          % Stil der Zeilennummern
+         %stepnumber=2,               % Abstand zwischen den Zeilennummern
+         numbersep=5pt,              % Abstand der Nummern zum Text
+         tabsize=2,                  % Groesse von Tabs
+         extendedchars=true,         %
+         breaklines=true,            % Zeilen werden Umgebrochen
+         keywordstyle=\color{red},
+            frame=b,         
+ %        keywordstyle=[1]\textbf,    % Stil der Keywords
+ %        keywordstyle=[2]\textbf,    %
+ %        keywordstyle=[3]\textbf,    %
+ %        keywordstyle=[4]\textbf,   \sqrt{\sqrt{}} %
+         stringstyle=\color{white}\ttfamily, % Farbe der String
+         showspaces=false,           % Leerzeichen anzeigen ?
+         showtabs=false,             % Tabs anzeigen ?
+         xleftmargin=17pt,
+         framexleftmargin=17pt,
+         framexrightmargin=5pt,
+         framexbottommargin=4pt,
+         %backgroundcolor=\color{lightgray},
+         showstringspaces=false      % Leerzeichen in Strings anzeigen ?        
+ }
+ \lstloadlanguages{% Check Dokumentation for further languages ...
+         %[Visual]Basic
+         %Pascal
+         %C
+         %C++
+         %XML
+         %HTML
+         Java
+ }
+    %\DeclareCaptionFont{blue}{\color{blue}} 
+
+  %\captionsetup[lstlisting]{singlelinecheck=false, labelfont={blue}, textfont={blue}}
+  \usepackage{caption}
+\DeclareCaptionFont{white}{\color{white}}
+\DeclareCaptionFormat{listing}{\colorbox[cmyk]{0.43, 0.35, 0.35,0.01
+}{\parbox{\textwidth}{\hspace{15pt}#1#2#3}}}
+\captionsetup[lstlisting]{format=listing,labelfont=white,textfont=white, singlelinecheck=false, margin=0pt, font={bf,footnotesize}}
+\newcommand{\subsubsubsection}[1]{\paragraph{#1}\mbox{}\\}
+\newcommand{\subsubsubsubsection}[1]{\subparagraph{#1}\mbox{}\\}
+
+
+\begin{document}
+
+
+
+
+\author{James Gallagher}
+\title{\vspace{50mm} MobiPeek: A Crowd Sourced,\protect\\ Remote Location Viewing System}
+\affil{B.Sc. Computer Science,\\ Lancaster University}
+
+
+
+
+
+\maketitle
+\newpage
+\begin{abstract}
+
+As location aware mobile technologies become ever more omnipresent, the prospect of exploiting their context awareness to crowd source information rises. Utilising the growing acceptance of ubiquitous computing, and the steady progress both in accuracy and battery usage of pervasive devices, this paper  presents a case study of remote location viewing.
+
+The project introduces a new innovative mobile application, MobiPeek, based around a request/response protocol for the viewing of a remote location. Applications for such a system are vast; ranging from mundane to potentially lifesaving if utilised in an disaster zone.
+
+The system developed allows a user to select a point on a map, and send a request. Users can attach messages alongside time and distance constraints. Users within the bounds of the request can respond with an image, and accompanying message, providing context to the response.
+
+In addition to the implementation, the project strives to evaluate this application in numerous contexts.
+
+In concluding the paper, limitations, of the solution are identified, and further work is proposed.
+\end{abstract}
+\newpage
+
+“I certify that the material contained in this dissertation is my own work and
+does not contain referenced or unacknowledged material. I also warrant that
+the above statement applies to the implementation of the project and all
+associated documentation. Regarding the electronically submitted version of
+this submitted work, I consent to this being stored electronically and copied for
+assessment purposes, including the Department’s use of plagiarism detection
+systems in order to check the integrity of assessed work.
+I agree to my dissertation being placed in the public domain, with my name
+explicitly included as the author of the work.”
+\newline 
+Date:
+\newline
+Signed:
+\newpage
+
+\tableofcontents
+\newpage
+\section{Contact Details}
+\author{James Gallagher}
+\href{mailto:j.gallagher1@lancaster.ac.uk}{\nolinkurl{j.gallagher1@lancaster.ac.uk}}
+\newpage
+\section{Working Documents}
+The working documents are located at
+\url(www.lancs.ac.uk/ug/gallagjr/)
+
+
+\newpage
+\section{Project Overview}
+This project aims to discuss and develop a mobile system where-by, one user can request a visual insight of a geographically bound location. Such a system is important since there currently exists no smart phone application in this domain. Applications of the proposed system could range from the trivial, such as users requesting to view the queue at a restaurant, to the important, such as emergency services surveying an area blocked off by debris, or police viewing a large area during during an ``Amber Alert''. Since smart phone use is so prevalent, coverage of the systems network should be high.
+
+This project also aims to incentivise the usage of such a system - which is important due to the inherent costs to a potential user. These cost manifest themselves in terms of battery usage, time, and potentially mobile data usage.
+
+The project will involve multiple phases, preliminary research, development of the request/response protocol, implementation of the software platform and it’s evaluation. The proposed project hopes to discover if it is workable to put in place the described system in a sustainable, useful way.
+
+%refernce!
+Cisco describes the internet of things (IoT), as a ``network of physical objects accessed through the internet''. \cite{Inter3:online} 
+These objects contain technology to interact with the external environment. We generally consider IoT devices to be things such as embedded sensors. Mobile phones and wearable technology however, also fit the description provided. This is because they are essentially bundles of sensors networked together.
+
+Most modern smart phones include a camera. This leaves a large interconnected, untapped, network of devices that can capture images. The effort required by the end user to capture an image is minimal and the financial cost is low (cost of data plan). Other costs, such as effect on the battery life of the device are negligible.  Another potential disincentive is the time the user takes out of there day to stop and record video upon request, i.e. the time incurred for the user to reach into their bag or pocket and remove their phone.
+
+The benefit, however, of a real time visual reflection of a location is great, and could have implications in many disciplines. A tool such as this could have an impact in journalism, policing, simply general interest, or even very specific niches, such as determining quality of snow or waves for skiing or surfing. The main parameter for a request is geo-location, so therefore a system such as Google Maps should be investigated and included to view and select locations. Another key parameter is the nature of the request. This will depend on the incentive method used, but could either be open ended, where the request sender simply asks for an image, or come in the form of a question “Is the coffee shop busy”. Upon the sending of a request, all users of the platform in a certain radius will be notified, and have to option to accept the request, and then fulfill it.
+
+This document can be broken down into the following substantial sections:
+
+\subsection{Background}
+When considering the development of a substantial piece of software, it is imperative to consider the current state of the art, relevant technologies, similar applications or software and additionally, relevant academic papers.
+
+
+\subsection{Requirements And Design}
+This critical section of the document begins by outlining the requirements of the system. High level architectural diagrams are discussed, and these inform more technical design choices later in the section. The section concludes by outlining system use cases.
+
+
+\subsection{Implementation}
+This section of the report is concerned with the development, and development process appropriated to achieve the implementation of the system. The section is broken down in to the front end implementation, the back end implementation and the implementation of push notifications.
+\subsection{Testing}
+In this section, acceptance testing is carried out to verify the completeness of the mobile application part of the system. Unit testing is also carried out to test the rigor of the server side implementation. It is imperative to carry out stringent testing, the results of which will be referred to in the evaluation.
+\subsection{Evaluation}
+The Evaluation of the system commences via a discussion of User Studies. A user feasibility study is then carried out; followed by a usability study. The results of which are evaluated.
+
+This section compares and contrasts the interface of the system against Nielsen's Ten usability heuristics and further more compares the resultant application to the requirements set out in the Requirements And Design, drawing on data from the Testing section.
+\subsection{Conclusion}
+In concluding the report, I'll reflect upon the design decisions made, the challenges experienced
+and envisaged, and the tools I will utilise in my implementation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%THE BACKGROUND SECTION%
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\newpage
+\section{Background}
+This section details important background information that must be considered prior to embarking on the project. The current mobile software landscape is considered, as is the current state of application development technologies. This is followed by a literature review of more domain specific applications and academic writings. The section concludes by discussing what has been learned through this exploration of the state of the art.
+\subsection{Mobile Software}
+The mobile device market is currently dominated by two main platforms; Android, and iOS. 
+\subsubsection{Android}
+The open source Android operating system, developed in Palo Alto in 2003 by Android Inc. and later acquired by Google, provides a platform for the Android ``ecosystem'' of smart phones, tablets and wearable devices.\cite{Andro8} %REFERENCE
+
+Currently, Google is the principle maintainer of this ecosystem. Other companies, however, contribute and can customise the Android OS to their needs.
+
+Android applications are written in the Java programming language, and compile to .apk files. This ``Android Package'' is then distributed and installed onto users devices. The main distribution channel presently for Android applications is the Google maintained and curated "Play Store". Due to the open nature of Android, applications can also be distributed simply by transferring the .apk file; perhaps via URL or email.
+
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=0.5\textwidth]{androidArchitecture.jpg}
+     \caption{Diagram outlining the Android OS architecture. \cite{andro2}}
+     \label{fig:androidArch} %reffff
+\end{figure}
+
+Once installed on a device, Android Applications run in a "Sandbox" environment. This, coupled with the "principle of least privilege" whereby applications have access only to components they require, ensures the Android OS is a secure OS. Figure \ref{fig:androidArch} outlines the Android OS architecture.
+
+The Android operating system exposes many device features to application developers, including GPS, WiFi and Bluetooth.
+
+The Android OS is currently on version 5.0 - Known as Lollipop. A history of the Android OS versions can be found at \url(http://www.android.com/history/) \cite{1_fundamentals_2015}.
+\subsubsection{iOS}
+In contrast to Android, iOS is a closed source, in house operating system developed by Apple. iOS powers many of Apples portable devices such as the iPod, iPhone, iPad and potentially the iWatch. Devices capable of running iOS applications are shown in Figure \ref{fig:iOsPowered}.
+
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=0.3\textwidth]{ipadiphoneipod1.jpg}
+     \caption{iOS powered devices.}
+      \label{fig:iOsPowered}
+\end{figure}
+
+
+Developers build applications for iOS devices, subsequent to paying a 99 USD fee, through the suite of tools provided by Apple, such as XCode. iOS applications are written in the Objective-C programming language, and more recently, Swift. 
+
+The main distribution channel for the applications built for iOS is the ``App Store''. Much like the Google Play Store, this is a virtual market managed and curated by Apple. Unlike the Play Store, however, applications undergo a strict screening process to be listed, though on the 17th of March 2015 it was announced Google is also to start screening applications \ref{Googl2:online}. Again, unlike Android, the App store is the only distribution channel for iOS applications as they cannot be shared simply by sharing the packaged file. %reffff
+
+
+\subsubsection{Cross Platform}
+With Android and iOS systems being the predominant platforms in the mobile application space, the market is left somewhat segmented.
+
+As show in Figure \ref{fig:marketShare}, Android and iOS dominate the market, leaving the next competitor - Windows Phone, with a share of around 4 percent. 
+
+Cross platform development aims to tackle this. Cross platform development allows developers to write applications for one platform, and transfer the software on to multiple other platforms.
+In the mobile space, there are countless cross-platform technologies, often taking unique approaches to solving this problem.
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=0.5\textwidth]{11921-5387-Screenshot-2015-02-25-035326-l.jpg}
+     \caption{Smartphone Market Share. \ref{IDC: 7:online}}
+      \label{fig:marketShare} %refff
+\end{figure}
+\subsubsubsection{Xamarin} 
+Xamarin is one notable attempt at cross platform mobile development. Apps are written in the C-Sharp programming language and then compiled to native code. Xamarin provides two compilers to developers: on iOS, an ``Ahead-of-Time'' compiler compiling down to ARM assembly code, and for Android, a compiler which compiles to an intermediate language, which is then ``Just-in-Time'' compiled to assembly when the user launches the application.
+Xamarin is a paid product.
+
+\subsubsubsection{Corona} 
+The Corona SDK is a software development kit enabling developers to write applications in the Lua scripting language, and run these on iOS and Android Devices. Due to the closed nature of the Corona project, the compilation process is not public knowledge. Corona Labs, the developers of the platform, describe the SDK as ``The Standard in 2D mobile graphics'', with the company pushing the platform in the mobile gaming space, and as such, the platform is not best suited to this project. The Corona platform is free to use, however\ref{Devel0:online}. %cite!!
+
+\subsubsubsection{Phonegap/Cordova} 
+There is much confusion around PhoneGap/Cordova, leading to Adobe writing a blog post entitled "PhoneGap, Cordova, and what’s in a name?". \ref{Phone0:online}
+Basically, these two tools are the same, just released under different names due to licensing reasons. From here on, these tools are referred to as ``Cordova''. 
+
+Cordova provides a set of APIs exploiting native device features that the OS exposes to developers.
+This allows a fully featured smart phone application to be developed in HTML, CSS and JavaScript. These applications are hosted in the mobile device itself.
+
+Cordova is currently free to use, and open for source. For this reason, and additionally the ability to operate on a range of platforms, including the web, Cordova will be used for the implementation of this project.
+
+Front end web technologies are discussed at length in the following sections.
+
+\subsection{Web Technologies}
+The application implemented in this report will rely on the internet-connectivity inherent within smart devices. Web technologies are generally split into ``front-end'' and ``back-end''.
+
+\subsubsection{Front-end Web Technologies}
+The front end of the web can be thought of as the part of the web the user can see and interact with. The web is a series of HTML documents, styled with CSS.
+Interactivity can enhance the page, via JavaScript. JavaScript is also the language that Cordova uses to interact with device APIs, so is worth a discussion.
+\subsubsubsection{JavaScript}
+JavaScript is a high level programming language used extensively on the web. In recent years, the language and community has enjoyed significant growth as shown in Figure \ref{fig:githubRepos}.
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=0.5\textwidth]{github_new_repos-custom.png}
+      \caption{New GitHub Repositories illustrating the growth of JavaScript}
+      \label{fig:githubRepos}
+\end{figure}
+
+JavaScript, often abbreviated to JS, is a multi-paradigm language and is loosely typed. In recent years, there has been a large rise in the number of JavaScript frameworks released including AngularJS, React.js and Backbone.js. These frameworks attempt to give structure to larger scale JavaScript applications, following MVC patterns. 
+
+\subsubsubsubsection{Ionic}
+Ionic is a mobile JavaScript framework, built on top of the popular AngularJS framework currently developed by Google. Ionic provides developers with Angular directives (essentially custom HTML elements) to emulate mobile UI components. Ionic is free, open source, and designed to work with Cordova, and for this reason, Ionic will be used for this project.
+
+
+\subsubsection{Back-end Web Technologies}
+Back-end web technologies generally refer to the server and database. Web applications can often be referred to by a "stack", essentially a combination of technologies. Common stacks include; LAMP (Linux, Apache, MySQL, and Perl/PHP/Python), WAMP (Windows, Apache, MySQL, and Perl/PHP/Python) and MEAN (MongoDB, Express.js, AngularJS, Node.js).
+
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=0.6\textwidth]{mean.jpg}
+     \caption{Diagram outlining the MEAN stack}
+     \label{fig:meanOutline}
+\end{figure}
+
+Since Ionic, built on top of AngularJS, is playing a role in the implementation of this project, it makes technical sense to build with the MEAN stack, outlined in Figure \ref{fig:meanOutline}. The MEAN stack is especially fitting since it is entirely JavaScript based, down to the data being transferred in JSON (JavaScript Object Notation).
+
+\subsubsubsection{Node.js}
+Node.js is a popular server side JavaScript platform. Node.js, often called ``Node'' was first released in 2008 \cite{node_history} and is already in prevalent use by companies such as Microsoft, Walmart and PayPal. Node uses the Google V8 engine to execute code (the same engine as the Google Chrome web browser).
+
+\subsubsubsection{Express.js}
+Express.js is a lightweight web framework built on Node, to enforce MVC principles and structure much like the front end frameworks discussed.
+
+
+\subsubsubsection{Mongodb}
+MongoDB is an open-source document database. A record in MongoDB is a data structure composed of field and value pairs akin to JSON objects. 
+
+
+\subsection{Literature Review}
+I have been unable to find any existing commercial applications to review that provide the same functionality that I aim to provide. However the application I aim to build is made up of some key elements common in other applications. For this reason, I have divided my review of the state of the art into 4 broad sections:
+
+\begin{itemize}
+  \item Academic Papers.
+  \item Crowd Sourcing Applications
+  \item Image Sharing Applications
+\end{itemize}
+
+\subsection{Academic Papers}
+Given the niche nature of the proposed system, the quantity of relevant existing academic work is limited. Nevertheless, in this section I will review the state of the art in an academic context.
+\subsubsection{QuiltView: a Crowd-Sourced Video Response System}
+The first, and perhaps most relevant paper discussed is titled ``QuiltView: a Crowd-Sourced Video Response System'' \ref{chen2014quiltview}, and was published in 2014 by Zhuo Chen, Wenlu Hu, Kiryong Ha, Jan Harkes, Benjamin Gilbert,
+Jason Hong, Asim Smailagic, Dan Siewiorek, Mahadev Satyanarayanan from the School of Computer Science, Carnegie Mellon University.
+
+This paper proposes the implementation of a system not dissimilar to the MobiPeek system proposed and implemented in this paper. Chen et al. (2014) - Herein referred to as ``the authors'', suggest that in wearable devices such as Google Glass, the unique ability of 1 touch video recording, and it's intrinsic low effort, clears the path for ``a new type of crowd-sourced system in which users receive queries relevant to their current location''.
+The benefit, the authors argue, of such a system would be to solve a number of problems. One interesting scenario put forward is the applications potential roll in an "Amber Alert" or missing child case. It is suggested that if someone sees a child being abducted, the police would be able to subsequently issue a request to the surrounding area, with a description of the vehicle. All Google Glass wearers in the area will begin video capture, essentially acting as a context aware extension to CCTV.
+The paper also puts forward more trivial use cases, such as a real time queue viewer, and a ``free food finder'' in which users on a college campus can ask their peers if there is any free food on campus. In turn, users can send back video of the food, communicating both quality and quantity of the fare.
+\subsubsection{Labor Dynamics in a Mobile Micro-Task Market}
+This paper by Mohamed Musthag and Deepak Ganesan from the Department of Computer Science at the University of Massachusetts draws on a year long data set to investigate labor dynamics in crowd sourced micro-tasks markets. Given the intent to implement a incentive or reward system, this paper is certainly worth a discussion. The action of responding to a request can be thought of as a micro-task.
+
+Through their research, Musthag and Ganesan found that a small minority of users (around 10 percent) account for a ``a disproportionately
+large portion of activity (more than 80 percent)''. Musthag and Ganesan coin the term ``Super Agents'' for these users.
+Musthag and Ganesan provide some interesting graphs such as the one below which provides insight into the most effective times to post a task, in order to receive a response.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{Screen_Shot_2015-03-04_at_21_15_20.png}
+\caption{Graph showing best time to request a micro task}
+
+\end{figure}
+The authors also researched who the agents are. This research will be useful in this project in terms of targeting the application towards certain demographics.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{Screen_Shot_2015-03-04_at_21_40_16.png}
+\includegraphics[width=0.5\textwidth]{Screen_Shot_2015-03-04_at_21_40_21.png}
+\caption{Agents by age and education}
+\label{fig:agentsByAgeAndEd}
+\end{figure}
+Musthag and Ganesan make it clear that the so called ``super agents'' are incentive driven and drawing on the research by Musthag and Ganesan, a points based system will be implemented to catalyse interaction.
+
+\subsubsection{Scalable Crowd-Sourcing of Video from Mobile Devices } 
+This paper\ref{Simoens:2013:SCV:2462456.2464440}, published in 2013 and authored by Pieter Simoens et al proposes an ``always on'' video capture system for wearable technology. The benefit of such as system is argued to manifest itself in many ways; insurance fraud detection, crime detection, public safety and locating people, pets and things.
+
+The authors discuss in depth, the privacy issues surrounding ``always on'' video capture, writing that video capture of this nature is less deliberate than standard video capture, giving users little control over who or what they may record. The authors assert that there needs to be careful consideration around value vs. privacy in ``always on'' video capture system. The issue of privacy is one that must be kept in mind in the implementation of MobiPeek.
+
+
+
+
+\subsubsection{Crowd Sourcing}
+Crowd sourcing can be described as obtaining content or a service from a large number of people, perhaps via a medium such as the internet. 
+  
+\subsubsection{Task Rabbit}
+
+
+Task Rabbit \ref{TaskR2:online} is a San Francisco based start-up which aims to crowd source daily household tasks such as cleaning, DIY and cooking to free up it's users time. For an hourly fee users can pay ``Taskers'' to complete small chores for them, with Task Rabbit making use of a smart phone application to facilitate this exchange. The application is available on iOS and Android devices.
+
+The Task Rabbit service is currently limited to only a few cities in the United States and London however the service has been growing since its launch in 2008. The growth in the service has been helped by a significant amount of venture capital from many of the more well known investors in Silicon Valley such as Tim Ferriss and firms such as First Round Capital and 500 Startups.
+
+Task Rabbits founder, Leah Busque, came up with the idea for the service after she did not have time to go and buy dog food, and says she based the idea on “neighbors helping neighbors”, which is an key idea in crowd sourcing software. 
+
+An interesting mechanism Task Rabbit employs to encourage interactivity and good service is gamification, a growing trend in software - in particular software as a service (SAAS) - which aims to apply game mechanics such as rewards, to non-game contexts. ``Taskers'' are ranked on a leader board and can obtain virtual medals for completing an increasing number of tasks. 
+
+
+\subsubsection{Kickstarter}
+Kickstarter \ref{Kicks0:online} is a crowd sourced funding platform based in the United States. The companies tag line is ``bringing creative projects to life'' and they do this by allowing people interested in projects to pledge money, funding the project. A project on Kickstarter is ``a finite work with a clear goal'' and when a project is submitted to the site, a funding goal is also specified. This is the amount of money that the creator of the project believes they need to complete their project, and if the pledges don't sum to at least this value, the project will not be funded. 
+
+Much like Task Rabbit, Kickstarter also introduces elements of gamification into their system. When the creator submits their project they can also specify rewards for backers. The scale of these rewards increase with the amount of money a backer pledges and often for the largest value of pledges, the rewards are ``money can't buy'' style rewards.
+
+
+\subsubsection{Waze}
+
+Waze \ref{} is a community based traffic and navigation application that allows drivers to ``Get the best route, every day,
+with real time help from other drivers''. By crowd sourcing traffic data collection, Waze essentially is pulling in data from anywhere between tens to thousands of local drivers, who report traffic jams, accidents, hazards. This data is pulled in real time, which is helpful since it is time sensitive data - traffic jams don't last forever.
+
+Waze is especially useful around large scale events where major disruption is expected to occur, such as marathons and parades. Even non-users of the application should theoretically benefit from Waze since less people heading to congested areas should reduce congestion overall.
+
+The company also provides a means to provide the data collected by it's users too the media, meaning non-users, in addition to those who are perhaps digitally excluded further benefit.
+
+\subsection{Image Sharing}
+At it's heart, the proposed application is an image sharing one, though not a traditional social image sharing application such as those discussed in this section. In spite of this, it is still pertinent to discuss such applications. There is a plethora of image sharing applications on the market so those reviewed below are merely a small subset of the more popular applications.
+
+\subsubsection{Instagram}
+Instagram, founded by Kevin Systrom and Mike Krieger, launched in 2010, and purchased by Facebook in 2012 \cite{instagramWiki} is a photo sharing application with a focus on confining the images taken and shared through the application to Polaroid style square images. The application provides a number of digital filters to apply to the image before it is shared. Users can view each others photos in three key ways; by viewing another users profile, by viewing the ``Explore'' tab, or by scrolling through their feed. Viewing a users profile displays only that users photos, whereas the feed shows photos from any users that are ``followed'' by the active account and the ``Explore'' tab shows trending images from around the world. Aside from these key methods, users can also search ``hashtags''. A popular feature of Instagram is the use of these ``hashtags'' which allow users to tag their image with a word or phrase, and subsequently the image will appear alongside other images with the same `hashtag''.
+
+\subsubsection{Snapchat}
+Snapchat is another relatively new photo sharing, or photo messaging application first launched in 2011 by Stanford students Evan Spiegel, Bobby Murphy, and Reggie Brown \cite{snapchatWiki}. The feature differentiating Snapchat from other image sharing applications is the time limit imposed on the viewer of the image to view the image. Users who send the image can set the time between 1 and 10 seconds, and the recipient only has that amount of time to view the image. Snapchat claims to permanently delete the image after this time. This unconventional feature has lead to some controversy; with questions being asked about how truthful Snapchat are when it comes to removing images, and with the possibility for the system to be used for inappropriate communications. Snapchat also utilises another interesting feature. In an attempt to prevent screen shots of the transmitted images,``Snaps'', the recipient must hold one finger on the screen whilst viewing the image, thus making it difficult to take a screen shot. This method, however, has not proved entirely effective, again landing Snapchat in trouble as Jesus Diaz describes, writing for Gizmodo \cite{snapchatScreen}.
+
+\subsubsection{Flickr}
+In contrast to Snapchat and Instagram, Flickr is a much older service, launched in 2004 and currently owned by Yahoo \cite{flickrWiki}.  The service is primarily web based, but does provide applications for iOS, Android and other smart phone platforms. It could be argued Flickr is a more straightforward platform, with no ``Gimmick'' such as time bound photos or filters. Instead, Flickr simply provided it's users with a repository to upload and view their photos. Users can apply access control to these albums, making them public or private.
+
+\subsubsection{Vine}
+Another young company, Vine, unlike the applications above, is primarily focused with video sharing. Videos shared through Vine, however, are limited to be only six seconds in length. Vine was founded in 2012, and subsequently acquired by the micro-blogging giant Twitter the same year \cite{vineWiki}. When viewed, Vine videos loop, and a ``loop count'' is displayed in the top corner of the video. The pervasive nature of Vine across Twitter has lead to the emergence of Vine ``Celebrities'' and comedians who attract large audiences, and loop counts, with their six second videos.
+
+\subsubsection{YouTube}
+Another video sharing service, though much more mature than Vine, is YouTube. YouTube was founded in 2005 by three PayPal employees \cite{youtubeWiki}. These employees are often referred to as part of the ``PayPal Mafia", a group of very successful ex-Paypal employees who went on to found companies such as Linked-in, YouTube, SpaceX and Tesla \cite{paypalMafia}. In a similar vein to Flickr, YouTube provides no ``Gimmick'' or unique selling point, but again acts as a repository for user generated videos. Like Vine, however, YouTube has lead to the rise of ``Celebrities'', with some users making a living through advertisement revenue \cite{richYoutube}.
+
+\subsection{Feasibility}
+At this point, it may be useful to carry out a user feasibility study, interviewing users or carrying out focus groups to identify what, exactly, potential users of such an application may want to see delivered. However, given the uniqueness of the proposed application, it has been decided that user feedback would not be useful at this stage. The application is currently an intangible concept, and the scope (no matter how concise an explanation) for the users to misinterpret the description is too broad.
+
+Instead, a SWOT (Strengths, Weaknesses, Opportunities and Threats) analysis shall be carried out. The purpose of such an exercise is to determine if such a project is worthwhile.
+
+\begin{enumerate}
+\item{Strengths}
+- These are the characteristics of the project that put it at an advantage to others.
+
+
+\begin{enumerate}
+\item The Application is unique.
+\item There are a number of appropriate uses for such an application as identified in the review of QuiltView\cite{chen2014quiltview}.
+\item The scope of the project is achievable in the given time frame.
+\item Through exploiting open source technologies, the financial cost of such an implementation will be low.
+\item It is proven that in the mobile space, people are willing to share images given the success of the reviewed image sharing applications.
+\item It is proven that in the mobile space, people are willing to complete so called ``Micro-Tasks'', as outlined by Musthag and Ganesan (2013 )\cite{musthag2013labor}.
+\end{enumerate}
+
+
+\item{Weaknesses} 
+- These are the characteristics of the project that put it at an disadvantage to others.
+\begin{enumerate}
+\item The application has received no funding unlike all the others reviewed.
+\item The application has limited resource of developers.
+\item The application will require a large user base to be useful.
+\end{enumerate}
+
+\item{Opportunities}
+- These are elements that the project could exploit to its advantage.
+\begin{enumerate}
+\item The internet connected nature of smart devices.
+\item The geo-location features built into smart devices.
+\item The camera, built into most smart devices.
+\item The free mapping system provided by Google Maps.
+\item The abundance of open source code, expediting and simplifying the development process of such as large scale system.
+\end{enumerate}
+
+
+\item{Threats }
+- These are elements that could cause trouble for the project.
+\begin{enumerate}
+\item None identified.
+\end{enumerate}
+\end{enumerate}
+
+Later in this document, in the evaluation section, users shall be asked questions pertaining to the feasibility.
+\subsection{A Summary And Conclusion Of The Background}
+In reviewing the state of mobile software platforms, it was discovered that the most appropriate approach would be to build a cross platform application. This is because picking either side of the Android/iOS fence leaves a large user-base unaccounted for. 
+
+That said, due to the barriers to entry Apple puts in the way of iOS development; the 99 USD fee, the necessity for a Macintosh and the closed ecosystem making distribution a challenge, the focus of the development will be towards an Android build. Given the nature of cross platform, provided the barriers to entry are surpassed, there should be little preventing an iOS release at a later date.
+
+Through a review of the current cross platform frameworks, Ionic appears the most appropriate since it is free, and off the back of this, the suitability of the MEAN stack is evident.
+
+Having reviewed existing image sharing applications, it is important to note the key distinguishing factor MobiPeek has from others in the domain. Unlike YouTube, Instagram et al an interaction in MobiPeek is driven by the requesting user. MobiPeek in this respect, is very unique, and as noted when reviewing academic papers, despite a broad search, the only similar (though not identical) project is that proposed in QuiltView \cite{chen2014quiltview}. The QuiltView paper brought up some interesting uses for such a system, and was very much worthwhile reviewing.
+
+Through a SWOT analysis, the case for the development of this system is presented.
+
+
+
+
+\section{Requirements and Design}
+
+The requirements and design section of this document will outline both the functional and non functional requirements of this system. The user requirements are also considered, in addition to the those for the front end client application and the back end server and database.
+
+
+%citectiecite
+\subsection{Requirements}
+In Dr. Jaejoon Lee's lecture - Requirements Engineering \cite{jjoon:online}, a requirement is defined as "A property that a system must exhibit in order for it
+to satisfy the user". 
+
+Requirements are broadly split into two main categories; functional and non-functional. Dr. Jaejoon Lee describes functional requirements as 
+"requirements for services that a system is to deliver" and non-functional requirements as those which "specify the quality with which a system delivers its services".
+%citectiecite
+The "Unix Philosophy", originated by Ken Thompson, creator of the B and GO programming languages places emphasis on doing one thing well. In the book "Linux and the Unix Philosophy" by Mike Gancarz \cite{gancarz2003linux}, Gancarz distills the philosophy into nine key points of which two are listed below:
+
+\begin{itemize}
+\item Small is beautiful
+\item Do one thing well
+\end{itemize}
+
+Gancarz suggests that by "focusing on one single task, a program can eliminate much of the extraneous code that often results in extra overhead, unnecessary complexity and lack of flexibility".
+This piece of software shall facilitate location based requests of visual data, and nothing else. For that reason, it is important to keep the number of requirements to a minimum, thus avoiding feature creep, which, according to McConnell (1996),“is the most common source of cost and schedule overruns”. \cite{McConnell:1996:RDT:524972}
+
+\subsubsection{Functional Requirements}
+\subsubsubsection{General}
+The system shall:
+\begin{itemize}
+  \item Run on Android devices.
+  \item Allow users to create an account.
+  \item Allow users to log in.
+  \item Allow multiple users to use it simultaneously.
+  \item Store details about the user, their location, and requests and  responses on the server
+  \item Utilise both WiFi and 3G connections
+  \item Utilise device 3G connections
+\end{itemize}
+
+\subsubsubsection{Log in Screen}
+The system shall:
+\begin{itemize}
+  \item Provide the user with a method to enter and submit their      credentials, thus logging in to the system, subject to      authentication.
+  \item Allow users navigate to the registration screen.
+\end{itemize}
+\subsubsubsection{Register Screen}
+The system shall:
+\begin{itemize}
+  \item Allow the user to enter their desired user name and password, and an email.
+  \item Allow users to submit this data, thus creating an account.
+  \item Allow users to navigate back to the log in page.
+\end{itemize}
+\subsubsubsection{Main Screen}
+The system shall:
+\begin{itemize}
+  \item Allow users to navigate to other sections of the application from this screen. These sections are:
+\begin{itemize}
+\item Requests Screen
+\item Responses Screen
+\end{itemize}
+\item Present users with a large map.
+\item Allow users to navigate around the map and zoom in and out.
+\item Allow users to select a location on the map.
+\item Present users with a form too specify their request once a location is selected.
+\item Allow users to set the radius, duration and message of their request.
+\item Allow users to send or cancel the request.
+\item Allow users to search for locations on the map.
+\end{itemize}
+\subsubsubsection{Requests Screen}
+The system shall:
+\begin{itemize}
+
+\item Allow users to navigate to other sections of the application from this screen. These sections are:
+\begin{itemize}
+\item Responses Screen
+\item Main Screen
+\end{itemize}
+\item Allow users to view all the requests in their current geographical area that they are eligible to respond too.
+\item Allow users to select a request.
+\end{itemize}
+\subsubsubsection{Individual Requests Screen}
+\begin{itemize}
+\item Allow users to navigate back to the Requests Screen.
+\item Show the user the location of the request on a map.
+\item Present the user with an option to respond with the request, which opens the users camera.
+\item Allow the user to take a picture and send the image as a response.
+\item Allow the user to add a textual message, to give context to the image.
+\end{itemize}
+
+\subsubsubsection{Responses Screen}
+The system shall:
+\begin{itemize}
+
+\item Allow users to navigate to other sections of the application from this screen. These sections are:
+\begin{itemize}
+\item Requests Screen
+\item Main Screen
+\end{itemize}
+\item Present the user with a list of the requests they have sent, with the number of responses.
+\item Allow the user to select one of these requests to view a list of responses.
+\end{itemize}
+\subsubsubsection{Individual Response Screen}
+\begin{itemize}
+\item Allow the user to navigate back to the responses screen.
+\item Present the user with a list of the responses they have received for the selected request.
+\item Allow the user to select a response and view the image and message associated with it.
+
+
+
+
+
+
+\end{itemize}
+\subsubsection{Non-Functional Requirements}
+The system shall:
+\begin{itemize}
+\item Keep users informed of all errors and help them, if possible, rectify them
+\item Use an simple, minimal, easy to use interface
+\item fast and responsive, as users may expect with a modern mobile application.
+\item Operate in accordance with the Data Protection Act
+\item robust i.e. not crash
+\item Be secure.
+\item Be well and correctly documented
+\end{itemize}
+
+
+
+
+\subsection{System Architecture}
+The high level diagram of the system shown in Figure \ref{fig:sysOver} strives to provide context to the architecture of the system. Herein, when referring to the ``Front end'' or ``Client'' it is the users device that is being discussed. ``Back end'' refers everything encapsulated by the server; the API, the server-side logic, and the database. This diagram, coupled with the high level object diagram and set of sequence diagrams that follow, should help direct the design of the system at a more technical level.
+\begin{figure}[H]
+  \centering
+    \includegraphics [width=0.6\textwidth]{SystemOverview.jpg}
+     \caption{A high level overview of the system.}
+     \label{fig:sysOver}
+\end{figure}
+
+
+Figure \ref{fig:sysOver} highlights key aspects of the application. The client, the server and the concept of location. Google Maps is utilised to provide the maps. This is because it is well established, accurate and provides an API for iOS, Android and Web Technologies such as those exploited in this project to enable cross platform development. Figure \ref{fig:sysOver} draws attention towards three key actors in the system.
+\begin{enumerate}
+  
+  \item The User
+  \item The Server
+  \item Google Maps API
+  
+\end{enumerate}
+These actors will be discussed further when use cases are laid out.
+\subsection{Object Diagram}
+The purpose of the object diagram below (Figure\ref{fig:objDia}) is to strive to identify, at a more technical level, the objects in the system and the values and methods related to them. At this stage, a high level approach is still taken, but diagrams such as this, help guide the design and development process even if details are subject to undergo change.
+
+\begin{figure}[H]
+  \centering
+   \includegraphics [width=\textwidth]{architecture_006.jpg}
+     \caption{A high level object diagram.}
+     \label{fig:objDia}
+\end{figure}
+
+\newpage
+
+\subsection{Sequence Diagrams}
+Drawing on previously identified requirements and diagrams, sequence diagrams are now published. sequence diagrams are another critical step towards the implementation of the system, showing the sequence in which events happen.
+The point of these is not to reflect one-one the requirements, but instead take a more technical stance. By this, it is meant that the sequence diagrams will lay out how various elements of the system interact with each other, and the methods they call. The methods outlined in the following sequence diagrams will be reflected in the implementation.
+\subsubsection{Register User}
+This is the first interaction the user shall have with the system. The user shall enter their desired credentials which are sent to the server. An account in the user table of the database should then be created. A status variable is returned to the user. This allows the front end screen to let the user know all went well, or, if not, what went wrong.
+
+
+\begin{figure}[H]
+  \centering
+   \includegraphics [width=0.6\textwidth]{architecture_003.jpg}
+     \caption{Sequence Diagram: Registering a user.}
+     \label{sdRU}
+\end{figure}
+
+
+
+\subsubsection{Log-in User}
+Once a user is registered, their next most likely action is to log in. They enter the credentials they signed up with, and these are sent to the server. The server then authenticates the user, and a Boolean is returned. This is either successful or not, and the front end should act accordingly.
+
+
+\begin{figure}[H]
+  \centering
+   \includegraphics [width=0.6\textwidth]{architecture_005.jpg}
+     \caption{Sequence Diagram: Log-in User.}
+     \label{sdLI}
+\end{figure}
+
+
+\subsubsection{Send Request}
+Now the user is logged in, they may want to send a request to view a location. Here, we first call the Google Maps API to request to view a map. From here, the user can browser the map, and select a location to obtain it's latitude and longitude. With this information, a request is compiled, and sent to the server. The server adds the request to the database, and periodically checks for responses.
+
+
+\begin{figure}[H]
+  \centering
+   \includegraphics [width=0.6\textwidth]{architecture_001.jpeg}
+     \caption{Sequence Diagram: Send Request.}
+     \label{sdSRq}
+\end{figure}
+
+
+\subsubsection{Send Response}
+Once the user is logged in, they are able respond to other users requests. The user selects a request and takes a picture. The camera returns an image which can be placed in a response. This response is sent to the server and the other user is notified.
+
+\begin{figure}[H]
+  \centering
+   \includegraphics [width=0.6\textwidth]{architecture_002.jpg}
+     \caption{Sequence Diagram: Send Response.}
+     \label{sdSRsp}
+\end{figure}
+\subsubsection{Update User Location}
+
+Periodically the application must check the users location. This shall be done by calling getLocation() from the device to the GPS service. This is sent to the server, and subsequently, the database is updated.
+\newline
+\begin{figure}[H]
+  \centering
+   \includegraphics [width=0.6\textwidth]{archtecture_001.jpg}
+     \caption{Sequence Diagram: Get Location.}
+     \label{sdGL}
+\end{figure}
+
+
+
+
+\subsection{Back End Design}
+Once the requirements are set out, the next stage of the project is to design the back end: the server and the database.
+As mentioned in the Background section of this document, the MEAN stack will be utilised for the implementation of this system. 
+ This means the server will be implemented in Node.js and MongoDB will provide the database. The Node scripts will be hosted with Cloud9 (\url{www.c9.io}), and the database with MongoLab (\url{www.mongolab.com}). This development environment is discussed further in the later section, implementation.
+ 
+\subsubsection{Database Design}
+Though MongoDB is also discussed further in a later section, and implementation specifics should avoided in the design section; it is none the less important to clarify terminology here. Unlike more common database engines such as SQL, a MongoDB database does not consist of tables and rows; instead, collections and documents. The table below, Figure \ref{fig:sqlMongo},  outlines the key variations in terminology.
+
+
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=1\textwidth]{mongoTerm.png} %width 1 looks good maybe
+     \caption{SQL to MongoDB Mapping Chart.}
+      \label{fig:sqlMongo}
+\end{figure}
+
+The first task when designing the database was to decide on a high level architecture to describe it. This is shown below, in Figure \ref{fig:hldatabase}.
+
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=0.5\textwidth]{highleveldb__1_.png} 
+     \caption{High level database model.}
+     \label{fig:hldatabase}
+\end{figure}
+
+It is now necessary to outline the data stored in each of these collections. 
+
+\subsubsubsection{The Request Model}
+\begin{table}[H]
+\centering
+       \begin{tabular}{lll}
+    Field Name & Type   & Description                                    \\
+    \_id       & Number & The automatically generated id for the request \\
+    userid     & String & The unique id of the user who sent the request \\
+    lat        & Number & The latitude of the request                    \\
+    long       & Number & The longitude of the request                   \\
+    time       & Date   & The data the request was sent                  \\
+    state      & Number & The state of the request                       \\
+    message    & String & The message accompanying the request           \\
+    range      & Number & The geographical range of the request          \\
+    ttl        & Number & The length in time of the request              \\
+    responses  & Array  & An array holding the responses to the request  \\                                      
+    \end{tabular}
+\end{table}
+
+
+\subsubsubsection{The Response Model}
+\begin{table}[H]
+\centering
+       \begin{tabular}{lll}
+    Field Name & Type   & Description                                    \\
+    \_id       & Number & The automatically generated id for the response \\
+    userid     & String & The unique id of the user who sent the response \\
+    reqid        & Number & The ID of the request this response is for    \\
+    recipid       & Number & The ID of the recipient this response is for  \\
+    image       & String   & A Base64 encoded image               \\
+    message      & String & The message sent with the response image    \\
+    time    & Date & The time the response was sent    \\
+                                      
+    \end{tabular}
+\end{table}
+
+
+\subsubsubsection{The User Model}
+\begin{table}[H]
+\centering
+       \begin{tabular}{lll}
+    Field Name & Type   & Description                                    \\
+    \_id       & Number & The automatically generated id for the user \\
+    username     & String & The user set username \\
+    password       & Number & The user set password                    \\
+    lat       & Number   & The users latitude                 \\
+    long      & Number & The users longitude                          \\
+    gcmRegId    & String & The users device Google cloud messenger id      \\
+    points      & Number & The number of points the user currently has    \\                                     
+    \end{tabular}
+\end{table}
+\subsubsection{Server Side Scripts}
+In order to deliver content from the database to the client, it is necessary to write code, in this case Node.js. The implementation will follow RESTful practices, again described in greater detail in section 6. Essentially this means that, at a high level, the client will be calling on HTTP endpoints to retrieve the data it requires. A high level conceptual model outlining this is shown below, in Figure \ref{fig:hlcs}.
+
+
+
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=0.3\textwidth]{highlevelclientserver.png} 
+     \caption{High level client server diagram.}
+     \
+     \label{fig:hlcs}
+\end{figure}
+
+Again approaching this client-server architecture from a high level, as outlined in the diagram, data flows both directions from the database, through the server, to the client and vice versa.
+
+This is because, as covered when setting out requirements, the client will need to both update information in the database and retrieve data back from it.
+
+A detailed overview of the API's (Application programming interface) required by the client to perform all the database tasks will be outlined in the implementation section, covering the nuances and edge cases that are impossible to preempt at this stage. Below, however, is a list of the controllers that will be required and a brief description of their purpose.
+
+\subsubsection{The User Controller}
+This controller will provide all the user based functions an features. The controller shall handle the creation of a user, the authentication of a user, any updates to the user, such as their location, and the deletion of a user.
+
+\subsubsection{The Request Controller}
+This controller will provide all the request based functions an features. The controller shall handle the creation of a request, calculate the users in the area eligible to respond to the request and ensure they are notified, and  finally deal with the life span of the request.
+
+\subsubsection{The Response Controller}
+This controller will provide all the response based functions an features. The controller shall handle the creation of a response, and ensure the correct user is notified of the response
+
+
+\subsection{The User Interface}
+
+When referring to the user interface, we are discussing the way in which the application presents itself to the user, and how the user can interact with the system.
+
+Short of carrying out a full scale user study over a number of years, the best method of designing and developing a user interface shall be to draw on other research, existing UI components and user feedback.
+
+As mentioned in an earlier section, I will be using the ionic framework for this project. Ionic comes with a build in set of UI components designed to mimic native components.
+A full list of these can be found at \url(http://ionicframework.com/docs/components/).
+
+
+The Baymard institute, a large e-commerce research firm recently published research on the costs and benefits of using default components as opposed to custom components. In the blog post, published on the 27th of January, 2015,\cite{When 1:online} the author, Jamie Appleseed concludes with a litmus test; ``will the interaction or presentational benefits of a custom UI component offset its implementation and maintenance costs and outweigh the reduction in recognizability?''.
+
+In this situation, the answer is no, so it is beneficial to go with tried and tested default UI components such as those provided in Ionic.
+
+This argument, for default or standard components, is furthered in the book Mobile UI Patterns 2014, by UXPin\ref{https6:online}.
+%CITTTEEE
+The book talks in length about UI patterns, and presents "Problems" with a UI solution. A key theme of the book, is when it comes to UI design, not to reinvent the wheel and uses this mantra throughout, with popular applications as case studies.
+
+It is important to refer back a number of applications discussed in the literature review. Specifically the more domain specific image sharing mobile applications employ tab based navigation. Data is presented in lists and navigation between these lists is directed via tabs. The prevalent tab based UI pattern is presented in Figure \ref{fig:tabnav} below:
+
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=0.5\textwidth]{uiTabNav.png} 
+     \caption{Demonstration of tab based navigation.}
+     \label{fig:tabnav}
+\end{figure}
+
+The Ionic framework provides support for tab based navigation, so it will be sensible to implement this style of UI.
+
+Given the application is being primarily built for Android, it is important to discuss the design language recently proposed by Google; "Material Design".
+
+The language follows three core principles:
+
+\begin{itemize}
+\item Material is the metaphor
+\item Bold, graphic, intentional
+\item Motion provides meaning
+\end{itemize}
+
+
+It has been speculated that elements of these principles may become default in future releases of the Android operating system, and so it is important to keep them in mind.
+
+Google provides guidelines to developers outlining colours, shadows, typography, and other key design elements. Since this is a young proposition and not fully developed nor tested, it shall merely be a consideration; the language shall not be followed with any strictness.
+%citeee
+It would also be remiss to not discuss usability heuristics in this section, more specifically, those put forward by Jakob Nielsen: \cite{Nielsen}
+
+\begin{enumerate}
+\item Visibility of system status
+
+\item Match between system and the real world
+ 
+\item User control and freedom
+
+\item Consistency and standards
+
+\item Error prevention
+
+\item Recognition rather than recall
+ 
+\item Flexibility and efficiency of use
+
+\item Aesthetic and minimalist design
+
+\item Help users recognize, diagnose, and recover from errors
+
+\item Help and documentation
+
+\end{enumerate}
+
+In the evaluation section towards the end of this report, The system will be evaluated in the context of these heuristics, and the extent they manifest themselves in the system.
+
+These heuristics will, however, inform design decisions. Through using a tabbed navigation a number of heuristics are adhered to; the tab the user is currently on will be emboldened thus promoting the visibility of system status. Tabbed navigation adheres to commonplace consistency and standards as mentioned previously. An ``easy exit'' is also provided by the tabbed navigation system, as given the persistent nature of the menu, at any screen, the user can always find their way back home.
+
+When data entry is required, forms shall be used. These provide clearly labeled text boxes, a method of constraint, aiding the prevention of errors.
+
+when selecting a location, and when first launching the application, the user will be presented with a large, near full screen map. The inherent appearance of any map, virtual or physical, means it manifests itself in the system in a way such that it is matched with the real world. The navigation around the map will be standard scrolling, providing consistency for any user who has ever used a map based application in the past. 
+
+The same can be send for allowing the user to provide a response. The camera shall be accessed through the devices native camera API, and therefore consistent with any other photo based application on the phone.
+
+Aesthetic and minimalist design is a challenge to quantify. There has been an anecdotal trend towards more gesture directed interfaces, Snapchat is one example. Navigation between screens is controlled through swipes, and long taps cause different actions to short taps. FastCoDesign\ref{The S3:online}, suggest that despite the trivial technical nature of the long tap in comparison to more engineered gestures such as swipes and pinches, it is nevertheless ``rocking the world of mobile media sharing''. A gesture based interface negates the need for the same number of on screen controls as an interface where navigation is provided by buttons. In turn, this leads towards a more minimalist interface.
+
+In this system, gestures such as the long touch shall be used to select a point on the map. If a normal touch was used, it would be impossible to distinguish between an accidental tap, the start of a swipe, or an attempt to select a location. The long touch is a much more involved, purposeful action by the user.
+
+Furthermore, following on from the theme of gesture based interfaces, when the user is selecting the radius of their request, they will be presented with a slider, a standard mobile UI component, and an attempt to adhere to Nielsens Heuristics. By adjusting the slider, a visual method of conveying the range of the request is to zoom in and out the map such that the same radius is shown. The UI sketch below in Figure \ref{fig:uimck} outlines how both the long tap and the slider should work.
+
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=0.5\textwidth]{UImockup.png} 
+     \caption{Mockup of a long touch launching the request form.}
+     \label{fig:uimck}
+\end{figure}
+
+The other interfaces in the application shall be mostly unremarkable; simply list of requests an responses. When viewing an image received as a response, the image should fill the majority of the screen for clarity.
+
+
+
+\newpage
+\subsection{Use Cases}
+In this section, the use cases are stated. Drawn from the requirements, these are an integral stage in the design process, and will be referred back to extensively in the evaluation section.
+
+Use cases are possible interactions between actors in the system and the system itself. By listing these out and creating a use case diagram, I should be able to further identify and clarify the system requirements. As mentioned earlier, the application is aiming to do one thing well, so there are limited use cases.
+
+As a perquisite to describing the use cases it is necessary to first identify the actors. The diagram in Figure \ref{fig:sysOver} provides us with suggestions, and at the end of the System Architecture sub section, three key actors are defined. This section adds further actors to that list by defining a variety of Users:
+\begin{enumerate}
+  
+  \item Requesting User
+  \item Receiving user
+  \item Future Application User
+  
+\end{enumerate}
+
+This is done in an effort to aid coherence.
+
+\subsubsection{Use Case Descriptors}
+
+\begin{usecase}
+
+\addtitle{Use Case 1}{User Sign Up} 
+\addfield{Primary actor:}{Future Application User}
+\addfield{Secondary actor:}{Server.}
+\addfield{Summary:}{The user enters their desired credentials and creates an account }
+\addfield{Preconditions:}{The user has a smart phone }
+\addscenario{Main Success Scenario:}{
+  \item The users account is created.
+  \item They can now log-in and use the application.
+}
+\addscenario{Alternatives:}{
+  \item none.
+}
+\addscenario{Exceptions:}{
+  \item The users credentials already in the system
+}
+
+\addscenario{Post conditions:}{
+  \item The users now has an account
+}
+
+
+\end{usecase}
+
+\newpage
+\begin{usecase}
+
+\addtitle{Use Case 2}{User Log In} 
+\addfield{Primary actor:}{Application User}
+\addfield{Secondary actor:}{none.}
+\addfield{Summary:}{The user enters their desired credentials and if authenticated, can enter their account }
+\addfield{Preconditions:}{The user has a smart phone and has signed up }
+\addscenario{Main Success Scenario:}{
+  \item The users credentials match.
+  \item The user can now the application to request or respond too a request.
+}
+\addscenario{Alternatives:}{
+  \item none.
+}
+\addscenario{Exceptions:}{
+  \item The users credentials are not in the system
+    \item The users user name is correct but password is wrong
+
+}
+
+\addscenario{Post conditions:}{
+\item The user can use the app.
+}
+
+
+\end{usecase}
+\newpage
+\begin{usecase}
+
+\addtitle{Use Case 3}{Browse Map} 
+\addfield{Primary actor:}{User}
+\addfield{Secondary actor:}{Google Maps API}
+\addfield{Summary:}{The user browses the map to select a location to view.}
+\addfield{Preconditions:}{The user has a smart phone and has signed up and logged in}
+\addscenario{Main Success Scenario:}{
+  \item The user is presented with a map they can scroll around, search, and select a location on.
+
+}
+\addscenario{Alternatives:}{
+  \item none.
+}
+\addscenario{Exceptions:}{
+  \item The user does not have internet/GPS turned on.
+
+}
+
+\addscenario{Post conditions:}{
+\item The user can now send a request with a location.
+}
+
+
+\end{usecase}
+\newpage
+
+\begin{usecase}
+
+\addtitle{Use Case 4}{User Responds to Request} 
+\addfield{Primary actor:}{Providing Application User}
+\addfield{Secondary actor:}{Requesting Application User.}
+\addfield{Summary:}{The providing user is aware there is a request for their location, so they decide to take a picture and respond.}
+\addfield{Preconditions:}{The user has a smart phone and has signed up and logged in and is at the same location as a request }
+\addscenario{Main Success Scenario:}{
+  \item The user takes a picture
+    \item The user uploads it
+  \item The image is sent to the server and subsequently the requesting user
+
+}
+\addscenario{Alternatives:}{
+  \item none.
+}
+\addscenario{Exceptions:}{
+  \item The user does not have internet/GPS turned on.
+
+  
+
+}
+
+\addscenario{Post conditions:}{
+\item The requesting user has had their request fulfilled.
+}
+
+
+\end{usecase}
+\newpage
+\begin{usecase}
+
+\addtitle{Use Case 5}{User Is Notified of Request} 
+\addfield{Primary actor:}{Sever}
+\addfield{Secondary actor:}{User}
+\addfield{Summary:}{If the user is in the geographic area, they are notified of the request.}
+\addfield{Preconditions:}{The user has a smart phone and has signed up, logged in, and is at the same location as a request. }
+\addscenario{Main Success Scenario:}{
+  \item The user notified of a request targeted at the geographic area they are in.
+
+}
+\addscenario{Alternatives:}{
+  \item none.
+}
+\addscenario{Exceptions:}{
+  \item The user does not have internet/GPS turned on.
+  
+
+}
+
+\addscenario{Post conditions:}{
+\item The user is aware of the request they can take an image answering the request.
+}
+
+
+\end{usecase}
+\newpage
+\begin{usecase}
+
+\addtitle{Use Case 6}{User is notified of Response} 
+\addfield{Primary actor:}{Server}
+\addfield{Secondary actor:}{User}
+\addfield{Summary:}{The sever notifies the requesting user that someone has responded to their request.}
+\addfield{Preconditions:}{The user has a smart phone and has signed up and logged in and has sent a request.}
+\addscenario{Main Success Scenario:}{
+  \item The user is notified that they can view an image answering their request.
+
+}
+\addscenario{Alternatives:}{
+  \item none.
+}
+\addscenario{Exceptions:}{
+  \item The user does not have internet/GPS turned on.
+
+}
+
+\addscenario{Post conditions:}{
+\item The user can view the image answering their request,
+}
+
+
+\end{usecase}
+\newpage
+
+\begin{usecase}
+
+\addtitle{Use Case 7}{User Sends Request} 
+\addfield{Primary actor:}{Requesting Application User}
+\addfield{Secondary actor:}{none.}
+\addfield{Summary:}{The requests an image of a location. }
+\addfield{Preconditions:}{The user has a smart phone and has signed up and logged in and has chosen a location on the map. }
+\addscenario{Main Success Scenario:}{
+  \item The request is sent to the server
+
+}
+\addscenario{Alternatives:}{
+  \item None.
+}
+\addscenario{Exceptions:}{
+  \item The user does not have internet/GPS turned on.
+  
+
+}
+
+\addscenario{Post conditions:}{
+\item It is now possible for someone to respond to the users request.
+}
+
+
+\end{usecase}
+\newpage
+
+\begin{usecase}
+
+\addtitle{Use Case 8}{User Log Out} 
+\addfield{Primary actor:}{Application User}
+\addfield{Secondary actor:}{none.}
+\addfield{Summary:}{The user decides to log out so does so. }
+\addfield{Preconditions:}{The user has a smart phone and has signed up and signed in }
+\addscenario{Main Success Scenario:}{
+  \item the user is logged out successfully
+}
+\addscenario{Alternatives:}{
+  \item none.
+}
+\addscenario{Exceptions:}{
+  \item The user was never logged in.
+}
+
+\addscenario{Post conditions:}{
+  \item The user is now logged out.
+}
+
+\end{usecase}
+
+
+
+
+
+\subsubsection{Use Case Diagram}
+
+From these use cases identified, I have created a use case diagram, shown below in Figure \ref{ucdia}.
+\newline
+\includegraphics [width=\textwidth]{usecase_002.jpg}
+\label{fig:ucdia}
+
+\newpage
+
+\section{Implementation}
+The purpose of this section is to discuss, in detail, the process of building the server and application for this project. The section begins with an overview, breaking down the process into well defined, chronological sections. The section proceeds to describe, in depth, each section of the implementation.
+
+\subsection{Development Environment}
+In this brief section the tools, aside from programming languages and frameworks, that are employed to build the software are discussed.
+
+\subsubsection{Version Control}
+Version control is a very important aspect of developing software. A version control system (VCS) is one which records, and maintains a list of changes made to a file. This allows multiple users to work on a system, and more importantly, in-case the code base is lost or bugs are introduced, the developers can ``roll back'' to a previous version. For this project the VCS will be Git. Open Source, and created in 2005 by Linux creator - Linus Torvalds, Git is one of the most popular version control systems. This is perhaps, to some extend, due to the popularity of Github, a web based Git hosting service.
+
+Git can be used either through the command line, or clients, which essentially just provide a GUI to the tool. For front end work in this project the client is be used, and for back end work the command line.
+\subsubsection{IDE's}
+IDE's, or integrated development environments, equip developers with a suite of tools to aid development. IDE's usually consist of a code editor, build automation tools, and a debugger.
+
+For the back-end, node.js development work, a piece of software called "Cloud9" \url{https://c9.io/} is used. Cloud9 describes itself as "Development environment in the cloud". Having a cloud based IDE makes API development more friction-less. With a click of a button, changes can be deployed from the API from the same screen as code edits.
+
+Since cloud9 also provides an Ubuntu work space, essentially a Linux terminal, code can be checked into Git, package managers used as described below, all from one window.
+
+For front end work, there is, unfortunately no IDE for ionic development. The SublimeText (\url{www.sublimetext.com}), editor will be employed to write the code. Despite not providing an IDE, Ionic instead provides a very powerful, useful CLI (Command Line Interface) to deal with building and running Ionic projects.
+
+\subsubsection{Package Managers}
+There is a plethora of JavaScript package managers. Package managers automate the process of installing, updating and removing packages from the development environment. For purposes of brevity, this section just discusses the manager in predominate use for the development of MobiPeek; npm (Node Package Manager). Npm is the default package manager for Node.js and is bundled with it. Node Package Manager retrieves packages from a repository located and maintained at \url{http://npmjs.org}.
+
+\subsection{Back-End (API) Implementation}
+\subsubsection{RESTful Web Services}
+REST or Representational State Transfer is a software design pattern consisting of best practices for web service development. Rest is generally accepted to be a more straightforward alternative to SOAP and other based services. REST is as close as it gets to being widely accepted as "current best practice", having been developed by W3C, however since it is an architectural style and not a protocol, there are no official guidelines. Throughout the implementation it is intend to follow the guiding principles of REST as close as possible.
+RESTful web services typically use the HTTP protocol for communication and use the standard "HTTP verbs" for communication as follows:
+\subsubsubsection{GET} Given a URL such as foobar.com/users/ a GET to this address should return all the users. Given a URL such as foobar.com/users/1, the GET should return the user with the id 1.
+\subsubsubsection{PUT}
+Given a URL such as foobar.com/users/ a PUT to this address should replace all the users. Given a URL such as foobar.com/users/1, the GET should replace the information associated with user with the id 1.
+\subsubsubsection{POST} Given a URL such as foobar.com/users/, the POST should create a new user with a automatically generated ID. A POST to a URL with an ID id not generally used.
+\subsubsubsection{DELETE}  Given a URL such as foobar.com/users/ a DELETE to this address should remove all the users. Given a URL such as foobar.com/users/1, the DELETE should remove the user with the id 1.
+\subsubsection{CORS}
+When considering the development of any API, or any system where resources are transferred across domain, CORS must be a consideration. CORS, or cross origin resource sharing, is a mechanism through which data can be transfered across domains. With CORS not enabled, every call to the API would return an unauthorised response. CORS is enabled in node through Express.js and the app.use() function.
+\subsubsection{Testing the Web Services}
+Since the API's are built before the front end application, It is imperative there is a way to check the API endpoints exposes are working correctly. To do this a REST client,  "Postman" (\url{www.getpostman.com}) is used. Postman is available as both a Chrome, and packaged app, and allows a URL to be entered, HTTP verb, and HTTP parameters set, and the request to be sent. Postman then displays the data returned. Postman shall be used frequently to test the API's during the development process.
+\subsubsection{Code Structure}
+At this point it is important to explain how the code will be structured. As  mentioned in the Background section, the system is built on the MEAN stack (MongoDB, Express.js, AngularJS (Ionic), Node.js). The MEAN stack encourages developers to follow the MVC (Model View Controller) design pattern. 
+
+\begin{figure}[H]
+  \caption{Diagram outlining the MVC pattern.}
+  \centering
+    \includegraphics[width=0.5\textwidth]{MVC.png}
+\end{figure}
+The M represents models. Models are where and how data structures are defined, and the application specific models for MobiPeek are discussed at length in the Design section.
+
+The V is for view, which is what the user sees. C is for controller, which is where data in the models is manipulated and passed back to the view.
+
+In the MEAN stack, MongoDB provides a way to define models. Controllers can be written in JavaScript, then API endpoints and routing is provided through Express.js allowing the client to call and use these controllers, and receive  data back. A MEAN MVC digram is shown below in Figure \ref{fig:meanMVC}.
+
+\begin{figure}[H]
+  \caption{Diagram outlining the MVC pattern implemented.}
+  \centering
+    \includegraphics[width=1\textwidth]{MeanMVC.png}
+    \label{fig:meanMVC}
+\end{figure}
+
+As a result, the server side logic will consist of Routes, Controllers and Models, for which a brief explanation and overview is given below.
+
+\subsubsubsection{Routes}
+An Express application is initialised in the JavaScript code as shown below:
+
+\begin{lstlisting}[label=Initialising an express.js app,caption=Initialising an express.js app]
+var app = express(); // define our app using express
+\end{lstlisting}
+
+It is now possible to create a router for our application:
+
+\begin{lstlisting}[label=Initialising an express.js router,caption=Initialising an express.js router]
+//Get expresses router
+var router = express.Router(); 
+\end{lstlisting}
+
+With this router, routes around the applications server can now be defined. The code in the following listing is using the router  created to say, when a POST is sent to the URL /user, as per RESTful principles, a user should be created
+\begin{lstlisting}[label=Defining a route,caption=Defining a route]
+router.route('/user')
+    .post(userController.createUser)
+\end{lstlisting}
+
+\subsubsubsection{Controllers}
+Controllers such as the userController are defined in JavaScript files, such as userController.js.
+These controllers expose or export a number of methods, which are called dependent on the route accessed. The method "createUser" is shown below
+
+\begin{lstlisting}[label=Creating a user,caption=Creating a user]
+//**************** Create a User ******************//
+// is a POST - TAKES
+// - name (string)
+// - email (string)
+// - pass (string)
+// - name (string)
+// - lat  (number)
+// - long (number)
+exports.createUser =  function(req, res) {
+    var user = new User(); // create an instance of the User model
+    user.username = req.body.name; //Set the users name
+    user.email = req.body.email; // Set the users email
+    user.password = req.body.pass; // Set the users password
+    user.lat = req.body.lat; // Users last known latitude
+    user.long = req.body.long; // And Longitude
+    
+    //Save this information to the Model
+    user.save(function(err) {
+      //And return an appropriate HTTP response.
+        if (err)
+            res.send(err);
+        res.json({
+            message: 'user created!'
+        });
+    });
+};
+\end{lstlisting}
+
+\subsubsubsection{Models}
+As previously mentioned, models are provided by MongoDB. To manipulate the models, Mongoose shall be used, which according to their website "provides a straight-forward, schema-based solution to modeling your application data and includes built-in type casting, validation, query building, business logic hooks and more, out of the box.". 
+
+Essentially Mongoose is a set of JavaScript functions to make MongoDB manipulation more straightforward. An example of such a function is the save() function in the previous listing.
+
+A typical model looks like so that shown in below:
+\begin{lstlisting}[label=A typical model,caption=A typical model]
+var mongoose     = require('mongoose'),
+ObjectId = mongoose.Schema.Types.ObjectId,
+var Schema       = mongoose.Schema;
+var UserSchema   = new Schema({
+    username: String,
+    email: {type:String, required: true, trim: true, lowercase:true, unique: true},
+    password: String,
+    lat:Number,
+    long:Number,
+    gcmRegId:String
+});
+
+module.exports = mongoose.model('User', UserSchema);
+\end{lstlisting}
+
+As stated in the background section of this document, MongoLab (\url{https://mongolab.com}) is used to host the MongoDB database.
+
+
+
+\subsubsection{User Based Features}
+Initially it's sensible to tackle the implementation of the user based features.These are functions relating to user management such as registration and log-in.
+\subsubsubsection{The User Model}
+The user model can be seen in in the listing above, ``A typical model'', which is a copy of models/users.js. There is a strong link between this model and the one described in the Design section of this document.
+\subsubsubsection{User Registration}
+When a user registers, they must provide some credentials. As described in the User Model, these are:
+\begin{itemize}
+  \item Username
+  \item Email
+  \item Password
+  \item Latitude (Provided by device)
+  \item Longitude (Provided by device)
+  \item gcmRegId (Discussed later, Provided by device.)
+\end{itemize}
+The front end will gather these values, then as per RESTful principles, these values should be placed as a JSON object into the requests body, and a POST should be made to /users.
+The user route is configured such that when a post is performed, the createUser() method is invoked on the user controller.
+This method takes in a request (req) which is the request sent. 
+
+The body of this request is accessed via req.body. In the createUser() method a new instance of the user model is created with the parameters contained in the request
+
+The save method is then called, and an appropriate error message is returned
+
+
+\subsubsubsection{User Log-in}
+To log-in, the user must provide their user name and password. This is send in the body of an HTTP POST to the URL /auth
+
+\begin{lstlisting}[label=Route for authenticating a user,caption=Route for authenticating a user]
+
+router.route('/auth')
+    .post(userController.authUser)
+    
+\end{lstlisting}
+
+The method authUser() on the user controller takes in the request, reads the user name and password in the body, then looks for the User with the matching user name, using the Mongoose function .find() and checks if the password sent is the same as the one associated with that user in the model.
+\begin{lstlisting}[label=Authenticating a user,caption=Authenticating a user]
+
+//**************** Auth User ******************//
+// is a POST - TAKES the user id and pass
+exports.authUser = function(req, res) {
+    User.find({username: req.body.user_id }, function(err, user) {
+        if (err){
+            res.send(err);
+        } else {
+            if(user.length){
+                if(user[0].password == req.body.pass){
+                    res.json(user);           
+                }
+            }
+             res.send(new Error('failed to authenticate user'));
+        }
+    });
+}
+
+\end{lstlisting}
+If it is, the user object is returned to the client, otherwise, an  an error is returned.
+The function also does some extra checks to ensure the user actually exists such as if (user.length).
+
+
+\subsubsubsection{Updating the users location}
+Due to the nature of the system, in order to know which users are in the geographic area of a request, it is necessary to periodically update their location. Details of when this is done will be discussed in detail in section 8.3 - Front-End Implementation, however here the server logic for this process is explained.
+Once a user is authenticated, the User object is returned, which means the client knows ``who they are''. Their ID is now used in subsequent requests as an identifier.
+
+\url{/user/:user_id}:
+\begin{lstlisting}[label=Routes for known users,caption=Routes for known users]
+
+//The following happens at /api/users/:user_id
+router.route('/users/:user_id')
+    .get(userController.getUser)
+    .put(userController.updateUser)
+    .post(userController.updateUserLocation)
+    .delete(userController.deleteUser);
+\end{lstlisting} 
+
+In an Un-RESTful manner - there are two routes to update the user. One of these is a POST and only updates the Location. This is due to the method of user location tracking discussed in the implementation of the front-end. It is not ideal but still manageable. The [updateUserLocation()] method is the method called to update the users latitude and longitude, and is shown below:
+\begin{lstlisting}[label=Update the user location,caption=Update the user location]
+
+//**************** updateUserLocation  ******************//
+// is a POST - TAKES whatever you want to change
+exports.updateUserLocation = function(req, res) {
+    User.findById(req.params.user_id, function(err, user) {
+    if (req.body.location.latitude){
+        user.lat = req.body.location.latitude; 
+    }
+    if (req.body.location.longitude){
+        user.long = req.body.location.longitude; 
+    }
+    user.save(function(err) {
+            if (err)
+                res.send(err);
+
+            res.json({
+                message: 'user updated!'
+             });
+             
+        });
+    });
+}
+\end{lstlisting} 
+
+The method takes the request, finds the user by the ID given in the parameter of the request, then checks to see if the body of the request contains the new latitude of the user, and if so updates the users latitude in the instance of the User model.
+This process is repeated with longitude.
+The method then saves the model, and returns an appropriate response.
+
+\subsubsubsection{Updating User Information}
+As described in the previous sub section, unfortunately this is a separate method to updating the users location. This method is called when a PUT is sent to a user with an ID parameter in the request. The method checks the body of the request, and if any of the fields are set, the instance of the user model at the specified ID is updated. The method can be seen in listing 10. Again, the API returns back to the client an appropriate response.
+\begin{lstlisting}[label=Update the user information,caption=Update the user information]
+//**************** Update User ******************//
+// is a PUT - TAKES whatever you want to change
+exports.updateUser = function(req, res) {
+    User.findById(req.params.user_id, function(err, user) {
+        console.log(req.body)
+
+    if (err)
+        res.send(err);
+
+    if (req.body.name)
+        user.name = req.body.name; // update the name
+
+    if (req.body.email)
+        user.email = req.body.email; // update the email
+
+    if (req.body.pass)
+        user.pass = req.body.pass; // update the pass
+
+    if (req.body.lat){
+        user.lat = req.body.lat; // update the email
+        console.log(req.body.lat)
+    }
+    
+    if (req.body.long){
+        user.long = req.body.long; 
+         console.log(req.body.long)
+    }
+       
+    if (req.body.gcmRegId){
+        console.log('updating',req.body.gcmRegId)
+        user.gcmRegId = req.body.gcmRegId; 
+    
+        
+    }
+
+    user.save(function(err) {
+        if (err)
+            res.send(err);
+
+            res.json({
+                message: 'user updated!'
+             });
+        });
+
+    });
+}
+\end{lstlisting} 
+
+\subsubsubsection{Get User}
+This method simply takes a User ID as a URL parameter in a GET request ( \url{/user/:user_id}) and returns the user with that ID, or if the user does not exist, returns an error.
+\begin{lstlisting}[label=Get User,caption=Get User]
+//**************** Get User ******************//
+// is a GET - TAKES the user id /api/users/id
+exports.getUser = function(req, res) {
+    User.findById(req.params.user_id, function(err, user) {
+        if (err)
+            res.send(err);
+        res.json(user);
+    });
+}
+//*
+\end{lstlisting} 
+\subsubsubsection{Get Users}
+On a GET request to /users this method returns all the users.
+\begin{lstlisting}[label=Get Users,caption=Get Users]
+//**************** Get Users ******************//
+// is a Get - TAKES - nothing, so returns all users!
+exports.getUsers =function(req, res) {
+    User.find(function(err, users) {
+        if (err)
+            res.send(err);
+        res.json(users);
+    });
+}
+\end{lstlisting} 
+
+\subsubsubsection{Delete User}
+This method  takes a User ID as a URL parameter in a DELETE request ( \url{/user/:user_id}) and deletes the user with that ID, or if the user does not exist, returns an error.
+\begin{lstlisting}[label=Delete User,caption=Delete User]
+//**************** Delete User ******************//
+// is a DELETE -  TAKES the user id /api/users/id
+exports.deleteUser = function(req, res) {
+    User.remove({
+         _id: req.params.user_id
+    }, function(err, user) {
+        if (err)
+            res.send(err);
+
+        res.json({
+            message: 'Successfully deleted'
+        });
+    });
+}
+\end{lstlisting}
+\subsubsection{Request Based Features}
+The user controller discussed in the previous section is essentially a selection of CRUD methods - (Create, Read, Update, Delete). For purposes of brevity and conciseness, due to the inherent similarity between these methods on the user controller and both the request and response controller there is no need to discuss these methods in such depth, and instead, this section shall focus on more interesting and important sections of code. 
+\subsubsubsection{The Request Model}
+Listing 14 shows the request model - requests.js.
+
+\begin{lstlisting}[label=Request Model,caption=Request Model]
+var mongoose     = require('mongoose');
+var Schema       = mongoose.Schema;
+var Response = require('../models/responses');
+var RequestSchema   = new Schema({
+    userid: String,
+    lat:Number,
+    long:Number,
+    time:Date,
+    state:Number,
+    message:String,
+    range:Number,
+    ttl:Number,
+    responses: { type : Array , "default" : [] }
+});
+
+module.exports = mongoose.model('Request', RequestSchema);
+\end{lstlisting}
+
+Each request contains the id of the user who commissioned it, a latitude, longitude, time, state, message, range, ttl and an array of responses.
+
+The majority of these fields are self explanatory. Ttl stands for time to live, and essentially is just the time period for which the request remains open. State represents if the request is still open, has been read, or is no longer active. Range is the geographical range of the request.
+
+\subsubsubsection{Discovering users within a range}
+When a user generates a request, one of the parameters they pass to the server is range. How this is set will is discussed in a later section, but here is an overview of how it is used.
+The range is a radius, and the value is used to find all the users within an imaginary circle. 
+For example, a user may send a POST to /request with the range parameter of 0.3. This number is the difference in two latitudes, and a difference of 0.3 is equivalent roughly 7 miles given the equation:
+\begin{equation}
+\ m(\phi)=\frac{\pi}{180}R\phi_{\rm degrees}= R\phi_{\rm radians}
+\end{equation}
+ Where meridian distance is denoted by m(phi)
+and R denotes Earths mean radius (around 6,371 km). This equation equates one degree of latitude to be approximatley 112 Km.
+
+The request controller iterates through the users in the system, and for each one,
+the value 0.3 is passed to a function isBounded() along with the users latitude/longitude, and the requests latitude/longitude.
+
+The is bounded function is short and simple and is shown in listing 15
+
+\begin{lstlisting}[label=isBounded(),caption=isBounded()]
+function isBounded(x, y, cx, cy, radius) {
+  var distancesquared = (x - cx) * (x - cx) + (y - cy) * (y - cy);
+  return distancesquared <= radius * radius;
+}
+\end{lstlisting}
+
+The function simply takes the square of the distance between two points, and returns an boolean - true if the distance between the user and the request is less than the radius.
+
+If the user is bounded the catchment area of a request, a notification is sent to them and the request is added to the list of their possible requests. Push notification are discussed in a later section.
+
+
+\subsubsection{Response Based Features}
+Response based features work in much the same way as the user based features, and the response controller is just a set of CRUD methods. There is little value in detailing them here.
+
+\subsection{Front-End Implementation}
+\subsubsection{Overview}
+As mentioned, the front end of the application is built using the Ionic Framework. Ionic is based on AngularJS, and runs on top of Cordova. The diagram below outlines how Cordova operates, allowing developers to exploit native functions and features. Ionic would sit in the "web-technologies" section.
+\begin{figure}[H]
+  \caption{The Cordova architecture.}
+  \centering
+    \includegraphics[width=0.5\textwidth]{pg_architecture.png}
+\end{figure}
+
+An Ionic project consists of controllers, and services, and a main app file. Much like the server side node.js code, the app.js file defines routes around the application. A typical route definition is shown in the listing below:
+\begin{lstlisting}[label=A Route in Ionic,caption=A Route in Ionic]
+$stateProvider
+  .state('signin', {
+      url: '/sign-in',
+      templateUrl: 'templates/sign-in.html',
+      controller: 'SignInCtrl'
+    })
+\end{lstlisting}
+
+This route is telling Ionic that at the URL /sign-in, we use the sign-in template, and that should be controlled by the SignInCtrl controller.
+ For each view in the application there is a definition like this. The default route in the application is the sign in route, which means when the application is first launch this is where the user goes.
+ Routes are provided with the stateProvider, and this also provides methods to change states.
+ 
+ A controller in Ionic is again, very similar to those in node.js and define behavior. Services act in a sense like an API, and will will use them to call the server.
+ 
+ A template in Ionic is shown below.
+ \begin{lstlisting}[label=The registration screen template,caption=The registration screen]
+
+  <ion-view view-title="Register">
+        <ion-content>
+          <div class="list">
+            <label class="item item-input">
+              <span class="input-label">Email</span>
+              <input type="text" ng-model="user.email">
+            </label>
+            <label class="item item-input">
+              <span class="input-label">Username</span>
+              <input type="text" ng-model="user.name">
+            </label>
+             <label class="item item-input">
+              <span class="input-label">Password</span>
+              <input type="password" ng-model="user.pass">
+            </label>
+          </div>
+          <div class="padding">
+            <button class="button button-block button-positive" ng-click="register(user)">
+             Register
+            </button>
+          </div>
+        </ion-content>
+      </ion-view>
+\end{lstlisting}
+
+This template gives a good example of one of the advantages of AngluarJS/Ionic; Two-way data binding.
+\begin{figure}[H]
+  \caption{Two-way data binding overview.}
+  \centering
+    \includegraphics[width=0.5\textwidth]{two-way-data.png}
+\end{figure}
+
+If we attach a variable or JavaScript object to the scope, by using the ng-model attribute when the value is changed in the HTML, the value in the scope is updated. The user object shown in the template above, is effectively the same one the server adds to the database.When the Register button is clicked, the register method on the registration controller is called, which performs an HTTP post with the user object in the scope. This is shown below.
+
+ \begin{lstlisting}[label=The registration controller ,caption=The registration controller]
+    .controller('RegisterCtrl', function($scope, $state, $http, $ionicPopup) {
+        $scope.register = function(user) {
+            $http.post('https://fypserver-jamesgallagher.c9.io/api/users', user).
+            success(function(data, status, headers, config) {
+                console.log("success")
+                $state.go('signin');
+            }).
+            error(function(data, status, headers, config) {
+                alert('error registering')
+
+            });
+        }
+    })
+\end{lstlisting}
+
+With the core structure and features of Ionic outlined, in the following sections, for the sake of brevity, not every nuance of the front end is discussed; instead, key, unusual and interesting solutions are described. 
+
+\subsubsection{Maps}
+Throughout the prior sections of this document, it had been assumed that Google Maps would be the mapping service utilised in the implementation of the system. However; this application relies heavily on maps. The first screen the user sees, for example, is one large map.
+
+For this reason, when first implemented the web version of the Google Maps API was not deemed sufficient in terms of performance. It was slow, exhibited bugs, and did not lead to a good user experience.
+
+Another web based solution, MapBox, was explored. Sadly, this system had the same issues as Google Maps, and the issues were only compounded by the lack of a user community or support (especially within a Cordova environment).
+
+It was therefore decided, that the only solution was to go native; this being one of the key advantages of cross platform development.
+
+The phonegap-googlemaps-plugin \ref{wf9a51:online} was used to provide the single native map on the dashboard, and the performance increase was marked. It is important to stress at this point, that despite the name plugin, this solution is not simply ``plug and play'', instead proving much more challenging than the two web based solutions previously trialed. 
+
+It is only possible to have one native map in the application at a time, and closing it off and re-initialising it is far too computationally expensive. Instead, the other maps around the application are still web based, and provide a good point of reference should a comparison between native and web based mapping me needed.
+
+\subsubsection{Tracking The Users Location}
+
+Given the sand boxed nature of Cordova applications, once the app is closed, client side JavaScript can no longer run.
+Therefore, to achieve persistent tracking a native solution had to be sought. 
+
+Again, GitHub proved fruitful, with the cordova-plugin-background-geolocation \ref{chris7:online}. In the same vein as the native Maps, this should not be considered a ``Plug and play'' solution. 
+
+The benefit of background tracking does, however, come with  cost. Utilising GPS and WiFI to monitor the users location is expensive on the battery. Furthering the cost to the user that persistent geo location tracking presents is the impact on their data usage. It is not a sensible idea to call the server at a fixed time period when the user is stationary and is paying for their data.  To account for this, it is imperative to consider how and when location data should be sent to the server.
+
+The plugin \ref{chris7:online} allows for a distance filter too be configured. This is defined as the number of meters the device must move before an update event is generated.
+
+The distance filter is given by the equation:
+
+ \begin{equation}
+distanceFilter = (round(speed, 5))^2 + configuredDistanceFilter
+\end{equation}
+
+The diagram in Figure \ref{fig:distFilt}, taken from the plugins ``ReadMe'', demonstrates this logic in action. The left hand route represents a cab ride, and the right hand route, a walk:
+
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=0.8\textwidth]{distance-filter-city.png}
+    \caption{The distance filter demonstrate.}
+    \label{fig:distFilt}
+\end{figure}
+
+\subsubsection{The User Interface}
+
+A number of screenshots from the completed application are avaliable, along with a live build of the application, along side the other working documents at /url('http://www.lancaster.ac.uk/ug/gallagjr/') or \url('http://jamesrgallagher.github.io/fyp') 
+
+
+
+
+\subsection{Push Notifications}
+Though push notifications could be split to fit into a front end and back end implementation, they are significant enough to be given a section in their own right.
+
+\subsubsection{Background}
+Push notifications, in contrast to the RESTful API's implemented in early sections of this system, operate in the reverse. The communication is server driven. This means that as opposed to the client calling a method on the server, through, for example, an HTTP GET; instead, the Server calls on the client.
+
+Both Google and Apple provide a server side architecture to facilitate this form of communication. Google provides Google Cloud Messenger, or GCM\cite{Googl7:online}, and Apple provide Apple Push Notification Service\cite{Apple7:online}
+
+With the primary focus on building for Android, the rest of this section focuses on an Android specific implementation of push notifications via GCM.
+
+Google provides a architectural overview of how GCM is structured, shown in figure \ref{fig:gcmArch}
+
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=0.8\textwidth]{GCM-arc.png}
+    \caption{GCM architecture .}
+    \label{fig:gcmArch}
+\end{figure}
+\subsubsection{Implementing Push Notifications}
+Google provides a simple introduction to configuring a server to distribute push notifications. The first task is to obtain a GCM server key.
+
+Once a key is obtained, the MobiPeek server is able to authenticate against the GCM server. This allows messages to be sent from the MobiPeek system to Google.
+
+A message sent to the GCM server must contain a GCM client ID, or a number of GCM client ID's. The client can obtain these via Google Play Services code places within the client code.
+
+The GCM server maintains a queue of push notifications for each client device. If the client device is offline, the  message remains in the queue until the client device is online, at which point the GCM server distributes the messages to the client.
+\newpage
+\section{Testing}
+\subsection{Test Plan}
+This test plan provides an outline to the methodology followed in testing the MobiPeek application. The features being tested include:
+\begin{itemize}
+\item User registration
+\item User log in
+\item Sending a request
+\item Receiving a request
+\item Sending a response
+\item Receiving a response
+\item Viewing Requests
+\item Viewing Responses
+\item Navigation around the application
+\item Push notifications
+\end{itemize}
+
+Each feature being tested may include smaller sub-tests, such as navigation and canceling an action.
+\subsubsection{Objectives}
+The objectives of this testing process is to prove that all the desired functionality is working as expected. The outcomes of the testing will guide the conclusion of the report and project, and give an indication of the extent to which the aims set out in the requirements section have been met.
+\subsubsection{Testing Strategy}
+The testing strategy can be divided in to two main sections. The first is the unit tests. Unit tests are often, and in this case will be, automated. The code for the unit tests will be listed in this document and described. The unit tests will be applied to all the routes on the server side code, and each controller will be tested to check for a satisfactory output. What this satisfactory output may be will be discussed in the unit test section.  The second main aspect of testing is the user acceptance testing. This testing is applied to confirm that the system implemented is ready for operational use - with a focus on the front end of the application. The user acceptance testing will be outlined in the user acceptance testing section.
+\subsubsection{Features being tested}
+Below is a comprehensive list of all the features being tested:
+\subsubsubsection{Unit Testing}
+
+
+\subsubsubsection{User Acceptance Testing}
+\begin{enumerate}
+
+
+\item Registration Screen
+
+  \begin{enumerate}
+    \item User can enter desired credentials
+    \item User can register
+    \item User can navigate to log in screen
+  \end{enumerate}
+    
+    \item Log in screen
+  
+    \begin{enumerate}
+  \item User can log in
+    \item User can navigate to registration
+    \item User is shown an error if in correct credentials are added.
+
+  \end{enumerate}
+
+
+\item Main Screen
+  
+    \begin{enumerate}
+  \item User is presented with a    map
+    \item User can scroll around the map, and zoom in and out
+    \item User can select a point     on the map
+    
+     \item User can generate a      request
+      \item User can send a     request
+     \item User can navigate to the other screens
+  \end{enumerate}
+    
+    \item Requests Screen
+  
+    
+    \begin{enumerate}
+  \item User is presented with a    list of requests.
+    \item When a request is sent to the users area, it appears on the list
+        \item When a request is sent to the users area, the user receives a notification
+        \item If there are no requests in the area, the user is presented with a message conveying this
+          \item User can select a request and is taken to the individual request page
+              \item User can navigate to the other screens
+  \end{enumerate}
+    
+       \item Individual Request Screen
+  \begin{enumerate}
+  \item User is presented with the request they just selected on a map
+    \item User can select a button to respond to the request and launch the camera 
+        \item User can take a picture with the camera
+     \item User can send a      response
+    
+              \item User can navigate to the other screens
+  \end{enumerate}
+
+   \item Responses Screen
+  \begin{enumerate}
+  \item User is presented with a list of the requests they have sent, along side a number signifying the number of responses \item User is presented with a message if they have sent no requests  
+    \item User can select a request and is taken to a screen with a list of the responses for the request
+  
+    
+      \item User can navigate to the other screens
+  \end{enumerate}
+    \item Individual Response Screen
+  \begin{enumerate}
+    
+      \item User can view the image in response to their request, alongside any text.
+      \item User can navigate to the other screens
+  \end{enumerate}
+
+
+\end{enumerate}
+
+\subsubsection{Requirements}
+\subsubsubsection{Hardware Requirements}
+For the user acceptance testing, I will be using a variety of devices. This is very pertinent given the segmentation of hardware in the Android market as demonstrated in the figure below:
+\begin{figure}[H]
+
+\centering
+\includegraphics[width=0.5\textwidth]{androidSeg.jpg}
+\caption{Android Device Segmentation}
+\end{figure}
+The graphic gives a visual representation of the wide variety of manufacturers of android devices, each producing devices with varying performance and screen size, and potentially a disparity in versions of the Android OS.
+For this reason for the testing I will be using 4 devices listed below:
+\begin{itemize}
+\item HTC One
+\item MotoG
+\item LG G3
+\item Android Tablet
+\end{itemize}
+\begin{figure}[H]
+
+\centering
+\includegraphics[width=0.8\textwidth]{Screen_Shot_2015-03-05_at_22_31_31.png}
+\caption{Android Devices Used For Testing}
+\end{figure}
+
+
+
+
+
+\subsection{Acceptance Testing}
+In this section, a set of test matrices are listed, for each test case identified in the test plan. The input or action is listed, along with the expected output for each of the test devices.
+
+\subsubsection{Registration Screen}
+
+\begin{center}
+  \makebox[\textwidth]{\includegraphics[width=0.9 \paperwidth]{RegScreenTest.png}}
+\end{center}
+
+\subsubsection{Log in Screen}
+
+\begin{center}
+  \makebox[\textwidth]{\includegraphics[width=0.9 \paperwidth]{LoginScreenTest.png}}
+\end{center}
+
+\subsubsection{Main Screen}
+
+\begin{center}
+  \makebox[\textwidth]{\includegraphics[width=0.9 \paperwidth]{MainScreenTest.png}}
+\end{center}
+
+\begin{figure}[H]
+\caption{A user sending a request}
+\includegraphics[width=0.8\textwidth]{Screen_Shot_2015-03-05_at_22_38_24.png}
+\end{figure}
+\begin{figure}[H]
+\caption{A user browsing requests in their area}
+\includegraphics[width=0.8\textwidth]{Screen_Shot_2015-03-06_at_00_42_22.png}
+\end{figure}
+
+\subsubsection{Requests Screen}
+
+\begin{center}
+  \makebox[\textwidth]{\includegraphics[width=0.9 \paperwidth]{RequestsScreenTest.png}}
+\end{center}
+
+
+\subsubsection{Individual Request Screen}
+
+\begin{center}
+  \makebox[\textwidth]{\includegraphics[width=0.9 \paperwidth]{IndReqScreenTest.png}}
+\end{center}
+
+\subsubsection{Responses Screen}
+
+\begin{center}
+  \makebox[\textwidth]{\includegraphics[width=0.9 \paperwidth]{ResponsesScreenTest.png}}
+\end{center}
+
+\subsubsection{Individual Response Screen}
+
+\begin{center}
+  \makebox[\textwidth]{\includegraphics[width=0.9 \paperwidth]{IndResponseScreenTest.png}}
+\end{center}
+
+\subsubsection{Issues}
+As shown in the tables, the overwhelming majority of the tests were successful. There was however one issue; the tablet did not receive push notifications. upon investigation the cause was found to be the user not allowing the application permission to send push notifications, so no further action is needed.
+
+
+\subsection{Unit Testing}
+\subsubsection{Unit Testing Overview}
+To perform my automated unit testing, I used a node module named "mocha".
+Mocha allows you too write unit tests in JavaScript, and displays the results once run.
+I will include all the unit tests at the end of the document, but for context a typical unit test looks like so:
+\begin{lstlisting}[label=Code for a typical unit test,caption=Code for a typical unit test]
+
+  describe('Test ID Users1: Registering an existing user', function() {
+    it('should return error trying to save duplicate username', function(done) {
+
+    request(url)
+  .post('/api/users')
+  .send({name: 'james',
+        pass: 'james',
+        email:'test@test'})
+  .end(function(err, res) {
+          if (err) {
+            throw err;
+          }
+            res.status.should.be.equal(400);
+            done();
+        });
+    });
+  });
+\end{lstlisting} 
+The above code should be fairly self explanatory. Each unit test contains a description, outlining it's purpose, and an expected outcome as a parameter to the it() method.
+
+We specify a URL, and a HTTP verb, in this instance a POST, and if there is not an error, the unit test checks if the response is equal to what we expect; in this case a 400 - the HTTP response for a malformed request.
+
+\subsubsection{Unit Testing The /user Routes}
+\begin{center}
+  \makebox[\textwidth]{\includegraphics[width=0.9 \paperwidth]{userUnitTests.png}}
+\end{center}
+\subsubsection{Unit Testing The /request Routes}
+\begin{center}
+  \makebox[\textwidth]{\includegraphics[width=0.9 \paperwidth]{reqUnitTests.png}}
+\end{center}
+\subsubsection{Unit Testing The /response Routes}
+\begin{center}
+  \makebox[\textwidth]{\includegraphics[width=0.9 \paperwidth]{responseUnitTests.png}}
+\end{center}
+\subsubsection{Unit Testing Outcome}
+Below is a screen shot of the output, when running the unit tests. For completeness, and to demonstrate the unit tests work, I have also included one failing. This happens when we pass an existing user to the unit test expecting to register a new user.
+
+
+
+\begin{figure}[H]
+
+\centering
+\includegraphics[width=0.9\textwidth]{Screen_Shot_2015-03-06_at_04_13_56.png}
+\caption{Unit tests running successfully}
+\end{figure}
+
+
+\begin{figure}[H]
+
+\centering
+\includegraphics[width=0.9\textwidth]{Screen_Shot_2015-03-06_at_04_14_27.png}
+\caption{Demonstration of a unit test failing}
+\end{figure}
+
+\subsection{Usability Testing}
+The usability testing will be covered in the following evaluation section.
+
+\section{Evaluation}
+This section commences with a discussion of user studies and focus groups. Subsequently; the system is evaluated firstly in a feasibility context through a small scale user feasibility study. Following that, the system is evaluated in the context of user interface and user experience design, again through a small scale user study, in addition to an evaluation against Nielsen's ten usability heuristics. Finally the developed solution will be evaluated against the requirements laid out in section five, Requirements and Design, referencing points identified in section seven, Testing.
+
+\subsection{On User Studies and Focus Groups}
+In his website post on March 19, 2000 entitled ``Why You Only Need to Test with 5 Users'' ref{Why Y6:online} Jakob
+Nielsen argues that ``Elaborate usability tests are a waste of resources. The best results come from
+testing no more than 5 users and running as many small tests as you can afford''. To emphasise and quantify his point, Nielsen provides a graph demonstrating the number of usability problems found vs. the number of users, this graph is shown in Figure \ref{fig:neilsonGraph}.
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=0.5\textwidth]{Screen_Shot_2015-03-06_at_04_55_20.png}
+     \caption{: Graph showing diminishing returns in the number of users vs number of usability issues.}
+      \label{fig:neilsonGraph}
+\end{figure}
+The article acknowledges that 15 or more users will find the most number of defects, but due to the
+law of diminishing returns, the optimum number of users is still 5. Testament to the importance of a
+usability study, Nielsen notes that ``Zero users will give you zero insight''. 
+
+For this reason, a test group of 5 users will be canvassed.
+
+In the interest of consistency and results analysis, these same 5 users will be asked to take part in the feasibility and usability testing.
+
+The argument this report puts forward in section 4.7 regarding the appropriateness of a feasibility study so early on in the development process was the uniqueness and intangible nature of the project would lead to misinformation, and results of little use. To test this assumption, aspects of the user feasibility study shall be run twice. The users are asked a set of questions based on a short; concise, description of the application. The cohort of users then undertake the usability testing, and subsequently having used the application, are asked the same feasibility questions again. 
+
+Referring back to Figure \ref{fig:agentsByAgeAndEd} in section 4.4.2 of this document, the research carried out by Musthag and Ganesan identified that 55.79 percent of super users, and 54.5 percent of the total users of the micro task application they studied had ``Some College Education''. In the same vein, they found 57.64 percent of super users and 67.56 percent of the total users were of the ages 18-35.
+
+This provides compelling evidence that the target demographic for a crowd sourced micro-task application such as MobiPeek, is College (University) students, aged 18-35.
+
+For this reason, the 5 users that will comprise the cohort of testers shall fall within this demographic.
+The users are anonymous in the interest of privacy.
+
+\subsection{User Feasibility Study}
+The overarching aim of the user feasibility study is to assess the usefulness of the developed application to potential users. It is necessary to draw up a questionnaire to supply to the cohort in order to gauge this metric.
+Firstly, and perhaps most obviously, it is necessary to identify if the subject is a smart phone user, and if so, which device(s) they own. Following on from this, presuming they do own a smart phone, it is worthwhile identifying how often they engage with the similar applications identified in the literature review. Engagement can take the form of passive engagement and active engagement. In this context, passive engagement simply means observing others using the application. In Instagram, for example, viewing other users images. Active engagement refers to the actual sharing of content.By establishing the users propensity engage with these applications, a baseline metric is provided for comparison against the users propensity to engage with MobiPeek. In the literature review, specifically section 4.5, the PewInternet study was discussed, which suggests as shown in Figure \ref{pewInt} that in 2013 around 52 percent of internet users shared images and 20 percent shared videos. This study, however was not demographic specific, and it will be apt to compare my findings with the given cohort against the PewInternet study.
+
+The final questions, in the first instance will be asked based on a description of the system and in the second instance at a later date after the usability testing and once the subjects have had their hands on the application. These question will ask the cohort how often they imagine they might make a request to view a location, and how often, assuming they have requests requiring a response, they feel they will send responses. The results from the first and second time these questions are asked will be compared.
+
+The feasibility study given to the users is shown below in figure \ref{fig:userFStudy1}.
+
+\begin{figure}[H]
+\centering
+
+\includegraphics[width=1\textwidth]{FeasabilityStudyFinal1.jpeg}
+\caption{The first feasibility study}
+\label{fig:userFStudy1}
+\end{figure}
+
+\newpage
+
+\subsection{An Evaluation Of The First User Feasibility Study Results }
+
+The following sets of graphs  in  Figure \ref{fig:myGraphs1} through to Figure \ref{fig:myGraphs3} provide simple visualisations of the data collected in the form of pie charts. The graphs have been produced with ``highchart.js'' and a sample script will be provided with the working documents.
+
+\begin{figure}[H]
+\centering
+
+\includegraphics[width=1\textwidth]{myGraphs1.png}
+\caption{How often do members of the user study cohort view content on various applications}
+\label{fig:myGraphs1}
+\end{figure}
+
+ Figure \ref{fig:myGraphs1}  makes it very clear that Facebook and YouTube are the most important content providers for the user study group. Perhaps due to it's old age, none of the cohort use Flickr. 
+
+\begin{figure}[H]
+\includegraphics[width=0.9\textwidth]{myGraphs2.png}
+\caption{How often do members of the user study cohort share photos on various applications}
+\label{fig:myGraphs2}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{myGraphs3.png}
+\caption{How often do members of the user study cohort share video content on various applications}
+\label{fig:myGraphs3}
+\end{figure}
+
+As shown in Figure \ref{fig:myGraphs4}, users in the cohort are more predisposed to share photos over video. 
+The graph ignores ``Never'' responses, and compares the number of daily, weekly, and monthly active engagements with the sampled applications. It is worth noting photo sharing garners more active engagement despite the fact that there were only 4 photo sharing applications, yet 6 video sharing.
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{myGraphs4.jpeg}
+\caption{How often do members of the user study cohort share video content on various applications}
+\label{fig:myGraphs4}
+\end{figure}
+
+Given the clear preference within the user group to share photo over video, the lack of video is not a cause for concern, though it is something discussed later in this document in terms of future work.
+
+
+In terms of the devices owned by members of the user study group, iOS comes out on top with a total of 5 devices owned, however, some participants own multiple devices, and three out of the five own an Android device. From an evaluative perspective, a possible market of 60 percent is a good number. This coupled with the ability to build to iOS suggests cross platform was a strong path to take.
+
+The final questions I asked the users were how likely they felt it was that they might interact with the application, both through sending requests, and responses. Pie charts of the data collected are show below in Figures \ref{fig:reqChart1} and \ref{fig:respondChart1}.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{reqChart1.jpeg}
+\caption{ Given the description of the application, how often do members of the user study envisage they will send requets
+}
+\label{fig:reqChart1}
+\end{figure}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{respondChart1.jpeg}
+\caption{Given the description of the application, how often do members of the user study envisage they will respond}
+\label{fig:respondChart1}
+\end{figure}
+
+The pie charts illustrate again that users are more likely to request content as opposed to provide the content.
+
+\subsection{Usability Study}
+In this section of the evaluation, the application is given to the user group, and members are asked to carry out some simple, tasks to demonstrate core functionality. The purpose of such a study is to assess how easy the application is to use. This, however, is not the only evaluation of the usability of the application; MobiPeek shall also be compared and evaluated against Nielsen's ten heuristics.
+
+On top of retrieving usability feedback from the users, whilst they are carrying out the tasks assigned, a simple bit of JavaScript, monitors and logs out to a text file the users button presses, and the times these occurred. This allows for a more quantitative analysis, to accompany the users qualitative analysis.
+
+\subsubsection{A Technical Overview Of Quantitative User Interface Analysis.}
+In order to log all the button clicks, in the demo application given to the test subjects, all the buttons are given a name to help describe their purpose. Then, by attaching an event listener to the window, we can perform a simple Ajax post to the server on every click, sending the name of the button and the time, in seconds, that the click occurred.
+
+The listings below outline the changes made to the client and server to achieve this. Firstly, a new JavaScript file was created, called usabilityTesting.js
+
+\begin{lstlisting}[label=Usability testing script,caption=Usability testing script]
+
+function callback(e) {
+    var e = window.e || e;
+    if(!e.target.name){
+      return;
+    } else {
+      data = "The test subject just clicked "+e.target.name+" the time is: "+new Date().getTime() / 1000;
+      $.ajax({
+        type: "POST",
+        url: "https://fypserver-jamesgallagher.c9.io/api",
+        data: data,
+    });
+    }
+}
+
+if (document.addEventListener){
+    document.addEventListener('click', callback, false);
+}else{
+    document.attachEvent('onclick', callback);
+}
+\end{lstlisting} 
+
+Then, in server.js, it is necessary to log out when the post happens. This is easily done as follows:
+\begin{lstlisting}[label=Usability testing backend,caption=Usability testing backend]
+
+//Every request will call this - it's useful for debugging/logging
+router.use(function(req, res, next) {
+    console.log(req.body);
+    next(); // make sure we go to the next routes and don't stop here
+});
+\end{lstlisting} 
+
+The output the combination of these to changed produce is logged in the following format, where the time is the number of seconds since 1970/01/01.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{usabilityTestingOutput.png}
+\caption{The output from the usability testing
+}
+\label{fig:usabilityOut}
+\end{figure}
+
+The handout given to the cohort of users is shown below in Figure \ref{usabilityStudyFinal1}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{usabilityStudyFinal1.jpeg}
+\caption{ The usability study given to the test group.
+}
+\label{fig:usabilityStudyFinal1}
+\end{figure}
+
+\subsection{An Evaluation Of The Usability Study Results }
+
+The following graph, Figure \ref{fig:useTimes} shows the times measured during the usability test. The map touched have been summed, since the users are required too tap the screen multiple times to navigate around the map and find Lancaster Castle. All the users started from the same location, thus ensuring a fair test.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{useTimes.png}
+\caption{ The usability study given to the test group.
+}
+\label{fig:useTimes}
+\end{figure}
+
+This analysis has provided a number of key metrics. The following table outlines the minimum, maximum and mean times for each of the actions. Mean is calculated as:
+
+\begin{equation}
+ \bar{x} = \frac{x_1+x_2+\cdots +x_n}{n} 
+ \end{equation}
+ 
+And was done so with JavaScript.
+
+
+\begin{table}[H]
+\centering
+    \begin{tabular}{llll}
+    Action                      & Minimum Time/s & Maximum Time/s & Mean Time/s \\ \hline
+    Registration Email Input    & 1.4          & 2            & 1.2       \\
+    Registration Username Input & 3            & 3.8          & 3         \\
+    Registration Password Input & 0.8          & 3.2          & 3.2       \\ 
+    Registration Button Pressed & 1.4          & 1.9          & 1         \\
+    Sign in Username Input      & 1.21         & 2.6          & 1.4       \\
+    Sign in Password Input      & 1.2          & 2            & 1         \\
+    Sign in Button Pressed      & 0.8          & 3.4          & 1.2       \\
+    Map Pressed                 & 5.5          & 11.43        & 8.4       \\
+    Slider Selected             & 1.3          & 1.6          & 1         \\
+    Message Box Pressed         & 1            & 1.64         & 1         \\
+    Time Selection Pressed      & 2.5          & 5.8          & 1.8       \\ 
+    Request Send Pressed        & 1.2          & 1.9          & 2.8       \\
+    Request Tab Pressed         & 8.4         & 13.5         & 11.46       \\
+    Response Tab Pressed        & 2.2          & 4.4          & 4.25      \\ 
+    A Response Selected         & 3.2          & 1.7          & 1         \\ 
+    \end{tabular}
+\end{table}
+
+
+To complete all the tasks, the slowest user, user 4 still took under 50 seconds, which is a more than suitable duration of time for completing the tasks.
+
+By summing the mean duration of task specific actions, it is possible to identify the length each key task takes:
+
+\begin{table}[H]
+\centering
+    \begin{tabular}{llll}
+    Task                      & Mean Total Time/s\\ \hline
+    Register for an account    & 9.2  \\      
+    Sign In & 0.8       \\
+    Send a request& 16 \\
+    Send a response& 11.46 \\
+    View a response & 5.25\\
+ 
+    \end{tabular}
+\end{table}
+
+These are very satisfactory values. Given more time, it would be of great value to run the experiment again, only this time with a different interface, in order to test a Null Hypothesis. Although that will not be possible in this iteration of the project, all the groundwork is laid out paving the way for future work in this domain.
+
+The user responses were also, very positive. The application never scored below a five, however members of the cohort did leave some feedback. The suggestions were as follows:
+
+\begin{itemize}
+\item A virtual walk through.
+\item A number indicating the radius of the request in miles/kilometers.
+\item The ability to interact further after the initial request response.
+\end{itemize}
+
+This feedback is appreciated, and will be taken heavily into account when considering further work.
+
+A graphical presentation of the cohorts numerical score for each of the tasks follows in Figure \ref{usabilityG1} to \ref{usabilityG5}
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{chart__5_.png}
+\caption{ The users rating of task 1.
+}
+\label{fig:usabilityG1}
+\end{figure}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{chart__6_.png}
+\caption{ The users rating of task 2.
+}
+\label{fig:usabilityG2}
+\end{figure}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{chart__7_.png}
+\caption{ The users rating of task 3.
+}
+\label{fig:usabilityG3}
+\end{figure}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{chart__8_.png}
+\caption{ The users rating of task 4.
+}
+\label{fig:usabilityG4}
+\end{figure}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{chart__9_.png}
+\caption{ The users rating of task 5.
+}
+\label{fig:usabilityG5}
+\end{figure}
+
+\subsection{The Second Feasibility Study}
+Upon completion of the usability testing, subjects were asked the same questions that had been asked at an earlier date, in the first feasibility study, regarding their propensity to engage with the application. 
+
+Before having used the application, and having only heard the concept, with no tangible demonstration, 1 user said they would never request an image; 1 user said they would perhaps request one weekly, 1 user said the same for monthly, and the remaining two users suggested they may request images daily.
+
+The response to these questions the second time around highlighted a change. One the users had tried out and tested the application, 3 out of the 5 said they would use it daily, with the other two choosing weekly.
+
+A similar, though less convincing change was noted with the users response to the question: ``How often do you imagine you would respond with an image, presuming you had requests to respond to''.
+
+Previously, none of the users answered daily to this question. The second time around one user said they may use the application to respond daily.Of the two users who said they would never respond, one did not change their mind, whilst the other said they may respond monthly. The two users who had previously said they send responses weekly did not change their mind.
+
+\subsection{An Evaluation Against Neilsen's Ten Usability Heuristics}
+Though outlined previously in this document, in this section, Neilsen's 10 \cite{Nielsen} shall be outlined again for reference, and accompanied by a brief statement on how, or how not, MobiPeek strives to match these heuristics. 
+
+
+\begin{enumerate}
+\item Visibility of system status:
+As mentioned in the design section of this document, the decision to include a tab based navigation, allows this first of the ten heuristics to be met to some extent. No matter where the user is, they will always know where they are, and how to get elsewhere.
+
+Furthermore, other efforts have been made in the development of MobiPeek to emulate this heuristic. A loading spinner is always shown when waiting on the back end systems. Without this it would not be clear to the user that the system is doing something. A number along side each of the users requests alerts the user to how many responses they have for their request.
+
+Push notification, are perhaps the ultimate in enforcing the visibility of the systems status in a somewhat pervasive manner. Even when the user is not looking at the system, the system is still letting the user know of it's state.
+
+\item Match between system and the real world: 
+Again, as mentioned in the design section, maps are inherently going to provide some level of match up between the virtual and the physical. Other aspects where this is heuristic shows is with the camera. Though not a MobiPeek specific implementation, the native device camera provides shutter sounds an animation, giving a skeuomorphic feel. 
+ 
+\item User control and freedom
+The persistence of a tabbed menu, having it available at all time, is a very strong solution towards matching this heuristic. The user has total control over where they go in the application no matter where they are. On the other hand, however, MobiPeek does fall short here to a certain extent. When the loading animation is showing, the user cannot navigate via the tabs. Loading times tend to be less that 5 seconds thus not impacting the users work follow on their device, but it is important to consider this issue going forward.
+
+\item Consistency and standards
+This heuristic provides a strong argument for using built in components such as those in Ionic. Furthermore, by utilising the devices native camera, a native mapping system and native-esque device animations, MobiPeek really does strive to abide by as many standards as possible, allowing the user to feel comfortable and familiar. In general, things in the application that appear like buttons also behave like buttons and perform an action over and above simple navigation. UI elements that look more like navigation components; the back button in tool bars and the tabbed menu, also behave like navigation components.
+
+\item Error prevention
+By providing forms for input the opportunity for user error is reduced. Appropriate form elements are used, for example, when picking the duration of the request, a drop down select box is employed. This prevents the user from accidentally (or intentionally) entering wildly incorrect and inappropriate data. Another example of this is when selecting a location to send a request too. As opposed to requiring a user to enter a latitude and a longitude, instead, the application allows them to perform a purposeful long tap on the location in the map. If the user had to enter the latitude and longitude it would be very easy to make a mistake.
+
+All form elements and navigation elements are appropriately labeled such that they are not misleading, again, reducing errors. 
+
+\item Recognition rather than recall
+The first the the user is presented with when they launch the application is a Map. There is little recall required here, as the overwhelming majority of people know what a map does simply by looking at it. Given the map is provided by Google, there is a good chance a smart phone user will have navigated such map before.
+
+Through a persistent tab menu, the navigational controls are always where they user would expect them, and given a short trial on the app, the users should be comfortable navigating with out much thought.
+ 
+\item Flexibility and efficiency of use
+
+MobiPeek falls short in terms of this heuristic. The scope of the application is limited such that the requirement for ``super user'' control short cuts was not identified.
+
+\item Aesthetic and minimalist design
+
+Subject to opinion, MobiPeek does have a minimalist, aesthetic design. This was covered in some depth in the design section of the project.
+
+\item Help users recognize, diagnose, and recover from errors
+
+When an error occurs, the user is alerted to it. If it is something the user can fix themselves, such as a misspelled user name, MobiPeek will let the user know.
+
+On the other hand, it is not always possible to identify exactly what the cause of an error is. For example, if the client cannot communicate with the server, this could be because the user has switched their mobile internet off, an easy fix. Conversely this could be due to a technical fault with the server.
+
+\item Help and documentation
+
+User focused documentation is something that will be drawn up in the future. 
+\end{enumerate}
+\subsection{An Evaluation Against The Test Cases}
+
+MobiPeek performed very well during testing. The system passed all the acceptance tests, and unit tests. A benefit to having unit tests is the ability to run them at various intervals as a form of ``health check'' for the server. If an automated unit test fails, the cause can be investigated further. Usability testing also yielded promising feedback.
+
+\subsection{An Evaluation Against The Requirements}
+
+The principle, guiding requirement for MobiPeek, was to develop a mobile system where-by, one user can request a visual insight of a geographically bound location. To this end, the primary requirement has been met. However, the requirements set out were more detailed than simply that. Those requirements identified in Section 5; Requirements and Design, are listed below, and in the same vein as the evaluation against usability heuristics, a remark accompanies each.
+
+
+
+\subsubsection{Functional Requirements}
+\subsubsubsection{General}
+The system shall:
+\begin{itemize}
+  \item Run on Android devices: \textbf{This has been met.}
+  \item Allow users to create an account: \textbf{This has been met.}
+  \item Allow users to log in: \textbf{This has been met.}
+  \item Allow multiple users to use it simultaneously:\textbf{This has been met.}
+  \item Store details about the user, their location, and requests and  responses on the server: \textbf{This has been met.}
+  \item Utilise both WiFi and 3G connections: \textbf{This has been met.}
+  \item Utilise device 3G connections: \textbf{This has been met.}
+\end{itemize}
+
+\subsubsubsection{Log in Screen}
+The system shall:
+\begin{itemize}
+  \item Provide the user with a method to enter and submit their      credentials, thus logging in to the system, subject to      authentication:\textbf{This has been met.}
+  \item Allow users navigate to the registration screen:\textbf{This has been met.}
+\end{itemize}
+\subsubsubsection{Register Screen}
+The system shall:
+\begin{itemize}
+  \item Allow the user to enter their desired user name and password, and an email:\textbf{This has been met.}
+  \item Allow users to submit this data, thus creating an account:\textbf{This has been met.}
+  \item Allow users to navigate back to the log in page:\textbf{This has been met.}
+\end{itemize}
+\subsubsubsection{Main Screen}
+The system shall:
+\begin{itemize}
+  \item Allow users to navigate to other sections of the application from this screen. These sections are:
+\begin{itemize}
+\item Requests Screen:\textbf{This has been met.} 
+\item Responses Screen:\textbf{This has been met.} 
+\end{itemize}
+\item Present users with a large map:\textbf{This has been met.}
+\item Allow users to navigate around the map and zoom in and out:\textbf{This has been met.}
+\item Allow users to select a location on the map:\textbf{This has been met.}
+\item Present users with a form too specify their request once a location is selected::\textbf{This has been met.} 
+\item Allow users to set the radius, duration and message of their request::\textbf{This has been met.} 
+\item Allow users to send or cancel the request:\textbf{This has been met.} 
+\item Allow users to search for locations on the map::\textbf{This has been met though not tested.} 
+\end{itemize}
+\subsubsubsection{Requests Screen}
+The system shall:
+\begin{itemize}
+
+\item Allow users to navigate to other sections of the application from this screen. These sections are:
+\begin{itemize}
+\item Responses Screen:\textbf{This has been met.} 
+\item Main Screen:\textbf{This has been met.} 
+\end{itemize}
+\item Allow users to view all the requests in their current geographical area that they are eligible to respond too:\textbf{This has been met.} 
+\item Allow users to select a request:\textbf{This has been met.} 
+\end{itemize}
+\subsubsubsection{Individual Requests Screen}
+\begin{itemize}
+\item Allow users to navigate back to the Requests Screen:\textbf{This has been met.} 
+\item Show the user the location of the request on a map:\textbf{This has been met.} 
+\item Present the user with an option to respond with the request, which opens the users camera::\textbf{This has been met.} 
+\item Allow the user to take a picture and send the image as a response:\textbf{This has been met.}
+\item Allow the user to add a textual message, to give context to the image:\textbf{This has been met.} 
+\end{itemize}
+
+\subsubsubsection{Responses Screen}
+The system shall:
+\begin{itemize}
+
+\item Allow users to navigate to other sections of the application from this screen. These sections are:
+\begin{itemize}
+\item Requests Screen:\textbf{This has been met.} 
+\item Main Screen:\textbf{This has been met.} 
+\end{itemize}
+\item Present the user with a list of the requests they have sent, with the number of responses:\textbf{This has been met.} 
+\item Allow the user to select one of these requests to view a list of responses:\textbf{This has been met.} 
+\end{itemize}
+\subsubsubsection{Individual Response Screen}
+\begin{itemize}
+\item Allow the user to navigate back to the responses screen:\textbf{This has been met.} 
+\item Present the user with a list of the responses they have received for the selected request:\textbf{This has been met.} 
+\item Allow the user to select a response and view the image and message associated with it:\textbf{This has been met.} 
+
+
+
+
+
+
+\end{itemize}
+\subsubsection{Non-Functional Requirements}
+The system shall:
+\begin{itemize}
+\item Keep users informed of all errors and help them, if possible, rectify them:\textbf{As outlined in the evaluation against the Heuristics, it is felts this has been met.} 
+\item Use an simple, minimal, easy to use interface\textbf{As outlined in the evaluation against the Heuristics, it is felts this has been met.}
+\item fast and responsive, as users may expect with a modern mobile application.:\textbf{Through development of this application, the weaknesses in the current state of cross platform technologies presented itself. A grand attempt has been made to try to work around these limitations, through the incorporation of native features such as maps. }
+\item Operate in accordance with the Data Protection Act \textbf{This shall be discussed further in the weaknesses section.}
+\item robust i.e. not crash \textbf{See -Use an simple, minimal, easy to use interface}
+\item Be secure. \textbf{This shall be discussed further in the weaknesses section.}
+\item Be well and correctly documented \textbf{This shall be discussed further in the weaknesses section.}
+\end{itemize}
+
+\subsection{The Weaknesses Of The System and Further Work}
+
+Though it is very easy to conclude the report having met all the requirements laid out; it is not a sensible idea. The biggest weakness of MobiPeek in it's current incarnation, is the lack of security. This is not to say that security was not an issue, in fact it was considered. At one point a Oauth API was in place, however, it slowed development down too much, and in the end there was not time to re-implement it. The security on the API was provided by Passport.js \cite{Passp8:online}. The first order of business with regards to further work, is to improve the security of the application.
+
+A second weakness identified, though not just with the application, but with the project as a whole, is the lack of emphasis on the rewards system. Further work, will certainly place a large emphasis on the investigation of ``gamification'' and incentives. 
+
+The third and final major weakness is the limited number of situations the application has been tested in. Through reading papers such as ``Quiltview'' \cite{chen2014quiltview}, it is quickly learned that the application developed has a very interesting pool of potential contexts it would work well in. Further work should certainly involved a more rigorous investigation of these.
+
+\subsection{Conclusion}
+In concluding the project it is important to note, that a vast majority of the requirements have been met. These requirements were identified through a thorough exploration of the state of the art. This process allowed for high level, and more technical requirements to be identified. Drawing on these technical requirements, a full scale implementation of an application was carried out. The data models were created, API's written, and client side developed. 
+
+Once the application had reached a suitable state, a rigorous testing procedure was adhered to. All aspects were considered; in the acceptance testing it was shown that the application met the majority of the goals, the usability testing highlighted the thought and consideration given to the interface and user experience. Finally unit tests allowed the underlying structural code behind MobiPeek to be tested in a controlled, organised manner.
+
+The application, server, and report have been delivered on time, and regular meetings were held with the supervisor.
+
+In conclusion, I feel the project has been a success.
+\listoffigures
+\bibliography{fypBib}
+\bibliographystyle{plain}
+
+
+\end{document}
