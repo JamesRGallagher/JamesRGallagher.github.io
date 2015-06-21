@@ -78,16 +78,46 @@ angular.module('hs.mapbox', ['ionic'])
         });
     };
     $scope.hide = function() {
-      
+        
         $ionicLoading.hide();
     };
 
+     $scope.overlayPopover = function() {
+        $scope.items = ['1','2','3']
+      $scope.popover = '';
+          $ionicPopover.fromTemplateUrl('overlayPopover.html', {
+                     scope: $scope
+                 }).then(function(popover) {
+                   $scope.popover = popover;
+                     $scope.popover.show();
+                    
+                 });
+    };
+    $scope.infoPopover = function() {
+        $scope.items = ['1','2','3']
+      $scope.popover = '';
+          $ionicPopover.fromTemplateUrl('infoPopover.html', {
+                     scope: $scope
+                 }).then(function(popover) {
+                   $scope.popover = popover;
+                     $scope.popover.show();
+                    
+                 });
+    };
+
     $scope.closePop = function(){
-        $scope.popover.hide();
+
+        console.log( $scope.popover)
+        console.log("cloding")
+        $scope.popover.remove();
+        $('.popover-backdrop').hide();
     }
     //document.getElementByClassName('mapbox-control-info-right').remove;
 
     $scope.updateMap = function(period) {
+        if($scope.popover){
+       $scope.popover.remove();
+   }
         localStorage.clear();
 
       if (localStorage.getItem(period)) {
@@ -185,12 +215,20 @@ angular.module('hs.mapbox', ['ionic'])
     $scope.initializeMap = function(period) {
         L.mapbox.accessToken ='pk.eyJ1IjoiamFtZXNnYWxsYWdoZXIiLCJhIjoiM2MzM2MyZTMxNDM2ZTkyNTAxYjEzN2M1NWM1NWZkNTMifQ.Dt2Tl82Po5WVxX2sl3BxtQ'
         var map = L.mapbox.map('map', mapStyle).setView([54.0498942, -2.8055977], 15)
+
+
+
         $(".leaflet-control-zoom").hide();
         $(".mapbox-info-toggle").hide();
                 $(".leaflet-control-attribution ").hide();
 
         $scope.map = map;
         $scope.featureLayer = L.mapbox.featureLayer().addTo($scope.map);
+                var titleLayer = L.tileLayer.wms('http://lancasteruad.oxfordarchaeology.com:8080/geoserver/uad/ows?SERVICE=WMS', {
+            format: 'image/png',
+            transparent: true,
+            layers: 'Baines1824'
+        }).addTo($scope.map);
         // Stop the side bar from dragging when mousedown/tapdown on the map
       //  L.DomEvent.addListener(document.getElementById('map'), 'mousedown', function(e) {
         //    e.preventDefault();
