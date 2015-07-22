@@ -1,0 +1,326 @@
+@font-face {
+font-family: "Mohave";
+src: url("../fonts/Mohave-SemiBold.otf") format("opentype");
+}
+@font-face {
+font-family: "MohaveBold";
+src: url("../fonts/Mohave-Bold.otf") format("opentype");
+}
+
+@font-face {
+font-family: "iosDef";
+src: url("../fonts/SF-UI-Text-Regular.otf") format("opentype");
+}
+
+
+
+.hidden-tab-button{
+    width:100px;
+    height:100px;
+    background: transparent;
+    border: none !important;
+    font-size:0;
+
+}
+
+button{
+  font-family: "iosDef" !important;
+}
+a{
+   font-family: "iosDef" !important;
+}
+p{
+  font-family: "iosDef";
+}
+
+.item-divider{
+  
+}
+.has-tabs{
+  bottom:-100px;
+}
+.slideText{
+         
+  font-weight: 300 !important;
+
+ background-color: rgba(0,0,0,0.7);
+  bottom: 5%;
+  color: white;
+
+  font-size: 1.25em;
+  left: 0;
+  padding: 0.25em 0.75em;
+  position: absolute;
+}
+#profile-bg {
+        position: fixed;
+        left: 0;
+        top: -160px;
+        width: 100%;
+        height: 200px;
+
+      background: url('placeholderCover.png') no-repeat transparent;
+        background-size: 100%;
+        background-position: 50% 20%;
+
+        text-align: center;
+      }
+
+      #content {
+        position: relative;
+        margin-top: 150px;
+        background-color: white;
+        box-shadow: 0px -1px 10px rgba(0,0,0,0.4);
+        padding-top: 200px;
+      }
+
+      #profile-info {
+
+        position: absolute;
+        top: -95px;
+        width: 100%;
+        z-index: 2;
+        text-align: center;
+      }
+      #profile-name {
+        font-family:"iosDef" !important;
+
+        color: #444;
+        font-size: 20px;
+      }
+      #profile-description {
+        margin-bottom: 5px !important;
+        font-size: 15px;
+        color: #888;
+      }
+      #profile-description a {
+        color: #888;
+      }
+
+      #profile-image {
+        display: block;
+        border-radius: 100px;
+        border: 1px solid #fff;
+        width: 78px;
+        height: 78px;
+        margin: 30px auto 0;
+        box-shadow: 0px 0px 4px rgba(0,0,0,0.7);
+      }
+
+      .list-item-content {
+        padding: 5px;
+      }
+
+      .list-item {
+        color: #666666;
+      }
+
+      .post {
+        color: #444;
+      }
+
+      .post-time {
+        position: absolute;
+        right: 5px;
+        top: 5px;
+        font-size: 11px;
+        color: #888;
+      }
+
+      .post-profile-image {
+        display: inline-block;
+        vertical-align: top;
+        width: 48px;
+        height: 48px;
+        margin-right: 10px;
+      }
+      .post-options {
+        position: absolute;
+        font-size: 16px;
+        right: 5px;
+        bottom: 5px;
+        color: #888;
+      }
+
+
+  #thisPane {
+      height:101% !important;
+        background-image: url('wall.jpg');
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        background-size: cover;
+
+    }
+.fake-statusbar {
+
+  height: 20px;
+  max-height: 20px;
+  font-size: 12px;
+  box-sizing: border-box;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 4;
+  color: #fff;
+  padding: 2px 3px 3px 3px;
+}
+.fake-statusbar .time {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+}
+.fake-statusbar .pull-left { float: left; }
+.fake-statusbar .pull-right { float: right; }
+
+.title{
+   padding-top: 9px;
+  font-family: 'Josefin Sans', sans-serif;
+  font-weight: 300 !important;
+  font-size:22px !important;
+  color:#C2B49A !important;
+}
+.bar-header {
+  height: 59px !important
+}
+.bar-header > * {
+  margin-top: 20px !important;
+}
+.back-button{
+  margin-top: 9px !important;
+}
+.scroll-content{
+  top:0 !important
+}
+/* Empty. Add your own CSS if you like */
+
+.icon{
+  font-size: 28px;
+}
+
+.bar .button{
+  color:#FFEBCD
+;
+}
+
+
+.main-list{
+  margin-top: 100px;	
+}
+.comment{
+  margin-left: 12px;
+}
+.scroll{
+	margin-top: 50px;
+}
+.ionic-scroll{
+  padding:0 !important;
+}
+.white-font{
+  color:white;
+}
+
+.bar {
+   background-color: #273036;
+   
+}
+
+.full-image{
+  overflow-x: hidden; overflow-y: hidden;
+  margin-bottom:-5px;
+ 
+}
+.bar .title {
+  top:-18px;
+	color:#FFEBCD !important;
+
+}
+.bar-header {
+    border: 0px !important;
+    border-bottom-color: transparent !important;
+    background-image: none;
+    border-bottom: none;
+ 
+}
+
+.card{
+     
+}
+
+.item-body
+{
+ font-family: 'Josefin Sans', sans-serif;
+   overflow-x: hidden; overflow-y: hidden;
+  padding-left: 0px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-right: 0px;
+
+}
+.full-image{
+  width:100%;
+}
+.width-container{
+  overflow:hidden;
+  max-width: 500px;
+  margin:0 auto;
+  margin-bottom: -45px;
+}
+
+.item h2 {
+
+font-family: 'Josefin Sans', sans-serif;
+  font-size:12px !important;
+}
+.item-avatar{
+  height:55px !important;
+  min-height:50px;
+}
+.avatar-img{
+  width:35px !important;
+  height:35px !important;
+  top:13px !important;
+  background-image:blue;
+}
+.item p {
+font-family: 'Josefin Sans', sans-serif;
+  font-size:11px;
+}
+
+.image-loader-container{
+  padding-top: 125px;
+  min-height:370px;
+  background-color:#5D6B75 !important;
+}
+.image-loader{
+  margin-left: 47%;
+}
+.tabs{
+  border-top: 0px;
+  color:white !important;
+}
+.tab-nav{
+  background-color:#273036;
+  color:white !important;
+}
+.tab-item-active .icon{
+  color: #FFEBCD !important;
+}
+.icon{
+  color:white ;
+}
+
+.button-icon{
+  color:#FFEBCD !important;
+}
+.ion-ios-heart-outline{
+
+
+}
+.ion-ios-chatbubble-outline{
+  color:#8F2626;
+}
+.tab-title{
+  color:white;
+}
