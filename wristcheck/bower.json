@@ -5,6 +5,8 @@
     "ionic": "driftyco/ionic-bower#1.0.0"
   },
   "dependencies": {
-    "ion-image-lazy-load": "*"
+    "ion-image-lazy-load": "*",
+    "angular-colorthief": "~0.1.0",
+    "ion-autocomplete": "~0.2.3"
   }
 }
