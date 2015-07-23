@@ -91,9 +91,9 @@ angular.module('starter.controllers', [])
      
     
   
-    }
+    })
           
-        });
+      //  });
     }
 
 })
