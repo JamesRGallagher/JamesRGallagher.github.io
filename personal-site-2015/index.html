@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8">
+  <title>James Gallagher</title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- FONT
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link href="fonts/SF-UI/SF-UI-Text-Regular.otf" rel="stylesheet" type="text/css">
+  
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/skeleton.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/animate.css">
+  <link href='http://cdn.jsdelivr.net/devicons/1.8.0/css/devicons.min.css' rel='stylesheet'>
+  <!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="icon" type="image/png" href="images/favicon.png">
+  <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+
+  <script data-defer="true">
+  function viewSelectedWork(){
+    console.log('fade in')
+   $( "#selectedWorkCont" ).fadeIn( "slow" );
+    $('html, body').animate({
+        scrollTop: $("#toCenter").offset().top
+    }, 1000);
+ }
+
+
+ /* var i=0;
+  var images = ["003-MacBook-Space-Gray.png","003-MacBook-Space-Gray2.png"]
+  $("#image").attr("src","images/"+images[i])
+  setInterval(function(){
+      i++;
+      if(i==images.length){
+        i=0;
+      }
+      $("#image")
+       .fadeOut(1000, function() {
+             $("#image").attr("src","images/"+images[i])
+            
+        })
+        .fadeIn(1000);
+
+
+      // method to be executed;
+    },5000);*/
+  </script>
+
+</head>
+<body>
+
+  <!-- Primary Page Layout
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <div class="container">
+    <div class="row" id="firstWork">
+      <div class="five columns text" style="margin-top: 15%">
+        
+        <h1>James Gallagher</h1>
+        <p>
+        Mobile Developer <a href="#">@iLancasterUK</a><br> 
+        Code Fellow <a href="#">@GMDSP / @FuturEverything</a><br> 
+        MSc International Innovation <a href="#">@LancasterUni</a><br> 
+        Building <a href="#">@WristcheckApp</a><br>
+        <br>
+           Freelance Full Stack Developer with a passion<br>
+            for performant cross platform apps.
+         <br> Get in contact <a href="#">@jrgallagher53</a>
+    <br>
+          <button onclick="viewSelectedWork()">View Selected Work</button>
+
+        </p>
+      </div>
+  
+      <div class="seven columns image" style="margin-top: 0px;">
+        <img id="image" class="laptop animated headerImg" src="images/003-MacBook-Space-Gray2.png"/>
+      </div>
+    </div>
+    
+
+
+    <span id="selectedWorkCont">
+       <hr>
+     <div class="row"  id="toCenter">
+    <div class="seven columns portfolioWork">
+       <img id="image" class="laptop animated " src="images/003-MacBook-Space-Gray2.png"/>
+    </div>
+
+   <div class="five columns text">
+        
+        <h1>ProjectA</h1>
+        <p>
+        Mobile Developer <a href="#">@iLancasterUK</a><br> 
+        Code Fellow <a href="#">@GMDSP / @FuturEverything</a><br> 
+        MSc International Innovation <a href="#">@LancasterUni</a><br> 
+        Building trying to make <a href="#">@WristcheckApp</a><br>
+        <br>
+           Freelance Full Stack Developer with a passion<br>
+            for performant cross platform apps.
+         <br> Get in contact <a href="#">@jrgallagher53</a>
+    <br>
+          <button onclick="viewSelectedWork()">View Selected Work</button>
+
+        </p>
+      </div>
+  </div>
+  
+  <hr>
+  <div class="row">
+    <div class="five columns text" style="text-align:right;">
+   
+<h1>ProjectA</h1>
+        <p>
+        Mobile Developer <a href="#">@iLancasterUK</a><br> 
+        Code Fellow <a href="#">@GMDSP / @FuturEverything</a><br> 
+        MSc International Innovation <a href="#">@LancasterUni</a><br> 
+        Building trying to make <a href="#">@WristcheckApp</a><br>
+        <br>
+           Freelance Full Stack Developer with a passion<br>
+            for performant cross platform apps.
+         <br> Get in contact <a href="#">@jrgallagher53</a>
+    <br>
+          <button onclick="document.getElementById('works').scrollIntoView();">View Selected Work</button>
+
+        </p>
+    </div>
+    <div class="seven columns portfolioWork">
+               <img id="image" class="laptop animated " src="images/003-MacBook-Space-Gray2.png"/>
+        
+      </div>
+  </div>
+  <hr>
+     <div class="row">
+    <div class="seven columns portfolioWork">
+       <img id="image" class="laptop animated " src="images/003-MacBook-Space-Gray2.png"/>
+    </div>
+   <div class="five columns text">
+        
+        <h1>ProjectA</h1>
+        <p>
+        Mobile Developer <a href="#">@iLancasterUK</a><br> 
+        Code Fellow <a href="#">@GMDSP / @FuturEverything</a><br> 
+        MSc International Innovation <a href="#">@LancasterUni</a><br> 
+        Building trying to make <a href="#">@WristcheckApp</a><br>
+        <br>
+           Freelance Full Stack Developer with a passion<br>
+            for performant cross platform apps.
+         <br> Get in contact <a href="#">@jrgallagher53</a>
+    <br>
+          <button onclick="document.getElementById('works').scrollIntoView();">View Selected Work</button>
+
+        </p>
+      </div>
+  </div>
+   <hr>
+  <div class="row" >
+    <div class="five columns text" style="text-align:right;">
+   
+<h1>ProjectA</h1>
+        <p> 
+        Mobile Developer <a href="#">@iLancasterUK</a><br> 
+        Code Fellow <a href="#">@GMDSP / @FuturEverything</a><br> 
+        MSc International Innovation <a href="#">@LancasterUni</a><br> 
+        Building trying to make <a href="#">@WristcheckApp</a><br>
+        <br>
+           Freelance Full Stack Developer with a passion<br>
+            for performant cross platform apps.
+         <br> Get in contact <a href="#">@jrgallagher53</a>
+    <br>
+          <button onclick="document.getElementById('works').scrollIntoView();">View Selected Work</button>
+
+        </p>
+    </div>
+    <div class="seven columns portfolioWork">
+               <img id="image" class="laptop animated " src="images/mockDrop_MacBook Air (1).jpg"/>
+        
+      </div>
+  </div>
+
+</div>
+
+</span>
+<!-- End Document
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+</body>
+</html>

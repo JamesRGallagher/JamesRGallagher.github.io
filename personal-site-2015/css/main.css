@@ -1,0 +1,87 @@
+
+@font-face {
+font-family: 'SF-UL';
+src: url("../fonts/SF-UI/SF-UI-Display-ultralight.otf") format("opentype");
+}
+@font-face {
+font-family: 'SF-Reg';
+src: url("../fonts/SF-UI/SF-UI-Text-Light.otf") format("opentype");
+}
+
+
+.row{
+	padding:0;
+}
+
+
+
+a {
+	color:grey;
+	text-decoration: none;
+	 border-bottom: 1px dotted #000;
+}
+
+button{
+	font-family: 'SF-Reg' !important;
+	
+	margin:0 auto;
+	margin-top: 20px;
+
+	
+}
+body{
+	overflow-x:hidden;
+}
+h1 {
+
+	font-family: 'SF-UL' !important;
+}
+
+p {
+	line-height: 23px;
+	white-space:nowrap;
+	font-size: 14px;
+	font-family: 'SF-Reg' !important;
+}
+.laptop{
+	margin-left:0px;
+	width:210%;
+	max-width: 900px;
+
+}
+
+.portfolioWork img{
+	width:100%;
+
+
+}
+
+#selectedWorkCont{
+	display:none;
+}
+@media all and (max-width: 680px)   { 
+	 p  { font-size:12px;  line-height: 15px;
+	
+	} 
+	.image{margin-top: 40%}
+	.headerImg{display:none;}
+	p,h1 { text-align: center;}
+
+}
+
+@media all and (max-width: 600px)   { 
+	 p  { font-size:12px;  line-height: 15px;
+	 	
+		
+	} 
+	.text{ margin:0 auto; text-align: center;}
+	.image{margin-left: 0; margin-top: 0px !important;}
+	.laptop{
+	margin-left:0;
+	width:100%;
+}
+
+}
+
+
+
