@@ -31,7 +31,7 @@
 
   <script data-defer="true">
   function viewSelectedWork(){
-    console.log('fade in')
+  
    $( "#selectedWorkCont" ).fadeIn( "slow" );
     $('html, body').animate({
         scrollTop: $("#toCenter").offset().top
@@ -79,23 +79,23 @@
             for performant cross platform apps.
          <br> Get in contact <a href="#">@jrgallagher53</a>
     <br>
-          <button onclick="viewSelectedWork()">View Selected Work</button>
+          <button class="animated fadeIn" onclick="viewSelectedWork()">View Selected Work</button>
 
         </p>
       </div>
   
       <div class="seven columns image headerImg" style="margin-top: 0px;">
-        <img id="image" class="laptop animated headerImg" src="images/003-MacBook-Space-Gray2.png"/>
+        <img id="image" class="laptop animated headerImg fadeIn" src="images/003-MacBook-Space-Gray2.png"/>
       </div>
     </div>
     
 
 
-    <span id="selectedWorkCont">
+    <span id="selectedWorkCont" class="animated fadeIn" >
        <hr>
      <div class="row"  id="toCenter">
     <div class="six columns portfolioWork">
-       <img id="image" class="laptop animated " src="images/003-MacBook-Space-Gray2.png"/>
+       <img id="image" class="laptop animated fadeIn" src="images/ilancaster2.png"/>
     </div>
 
    <div class="six columns text">
