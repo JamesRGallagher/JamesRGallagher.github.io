@@ -1,7 +1,7 @@
 
 @font-face {
 font-family: 'SF-UL';
-src: url("../fonts/SF-UI/SF-UI-Display-Light.otf") format("opentype");
+src: url("../fonts/SF-UI/SF-UI-Display-UltraLight.otf") format("opentype");
 }
 @font-face {
 font-family: 'SF-Reg';
@@ -11,6 +11,7 @@ src: url("../fonts/SF-UI/SF-UI-Text-Light.otf") format("opentype");
 
 .row{
 	padding:0;
+
 }
 
 
@@ -32,8 +33,9 @@ button{
 body{
 	overflow-x:hidden;
 }
-h1 {
 
+h1 {
+text-align: center;
 	font-family: 'SF-UL' !important;
 }
 
@@ -42,6 +44,7 @@ p {
 	white-space:nowrap;
 	font-size: 14px;
 	font-family: 'SF-Reg' !important;
+	text-align: center;
 }
 .laptop{
 	margin-left:0px;
@@ -52,36 +55,67 @@ p {
 
 .portfolioWork img{
 	width:100%;
+	margin-top: 20px;
+	opacity:0.9;
+	border-radius:3px;
 
+
+
+
+}
+.iphone{
+	display:block;
+	margin:0 auto;
+	margin-bottom: 20px;
+	width:100% !important;
+	min-width: 300px;
+	
+	
 
 }
 
 #selectedWorkCont{
 	display:none;
 }
+
+@media all and (min-width: 1080px)   { 
+	.iphone{
+margin-left:40px;
+}
+
+}
+
 @media all and (max-width: 680px)   { 
 	 p  { font-size:12px;  line-height: 15px;
 	
 	} 
 	.image{margin-top: 40%}
-	.headerImg{display:none;}
+	
 	p,h1 { text-align: center;}
 
 }
 
+
 @media all and (max-width: 600px)   { 
-	 p  { font-size:14px;  line-height: 20px;
-	 	
-		
-	} 
+	 p  { font-size:14px;  line-height: 20px;} 
+	.headerImg{display:none}
 	.text{ margin:0 auto; text-align: center;}
-	.image{margin-left: 0; margin-top: 0px !important;}
+	.image{margin-left: 0; margin:0 auto; margin-top: 0px !important; }
 	.laptop{
-	margin-left:0;
+	margin:0 auto;
 	width:100%;
-}
+	display:block;
+	max-width: 400px;
+	
 
 }
+.iphone{
+	display:block;
+	margin:0 auto;
+	margin-bottom: 20px;
+	width:70% !important;
+	
 
+}
 
 
