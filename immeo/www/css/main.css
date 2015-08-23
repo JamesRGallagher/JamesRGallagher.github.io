@@ -3,7 +3,7 @@ body {
     background-color: #333;
 }
 h1 {
-    font-family: 'Raleway', sans-serif;
+    font-family: 'Damion';
     background: none !important;
     color:white;
 }
@@ -11,6 +11,18 @@ h2 {
     font-family: 'Raleway', sans-serif;
     background: none !important;
     color:white;
+}
+
+a{
+      font-family: 'Raleway', sans-serif;
+    background: none !important;
+    color:white;
+
+}
+
+.logoFont{
+  font-family: 'Damion';
+     color:white;
 }
 
 .item {
@@ -30,7 +42,7 @@ h2 {
     color: black;
 }
 .lead {
-    font-size: 16px;
+    font-size: 14px;
 }
 .leadLarge {
     font-size: 21px;
@@ -102,7 +114,7 @@ h2 {
 }
 .featurette-heading {
     color: #B7A85C;
-    font-size: 50px;
+    font-size: 40px;
 }
 .featurette-heading span {
     color: #B7A85C;
@@ -133,7 +145,7 @@ footer {
         margin-left: 20px;
     }
     .featurette-heading {
-        font-size: 35px;
+        font-size: 25px;
     }
 }
 @media(max-width:991px) {
