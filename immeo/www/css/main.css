@@ -13,6 +13,11 @@ h2 {
     color:white;
 }
 
+.logoImg{
+    width:10%;
+    margin-bottom: -30px
+}
+
 a{
       font-family: 'Raleway', sans-serif;
     background: none !important;
@@ -78,6 +83,9 @@ a{
     -moz-background-size: cover;
     background-size: cover;
     -o-background-size: cover;
+      background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7));
+
+   
 }
 .headline {
     padding: 120px 0;
